@@ -82,4 +82,235 @@
   </style>
 </head>
 <body>
-  <header>메랜파티존 <span class="login" id="loginArea"><button onclick="loginWithDiscord()">디스코드 로그인</button></sp
+  <header>메랜파티존 <span class="login" id="loginArea"><button onclick="loginWithDiscord()">디스코드 로그인</button></span></header>
+
+<!-- 헤더나 오른쪽 상단 영역 -->
+<div id="loginArea" style="position:absolute; top:20px; right:20px;">
+  <button onclick="loginWithDiscord()" 
+          style="background:#5865F2; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer;">
+    디스코드 로그인
+  </button>
+</div>
+
+<script>
+const CLIENT_ID = "1424448769113456752";
+const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
+const OAUTH_SCOPE = "identify";
+
+function loginWithDiscord() {
+  const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
+  window.location.href = url;
+}
+
+function handleDiscordLogin() {
+  const hash = window.location.hash;
+  if (hash.includes("access_token")) {
+    const token = new URLSearchParams(hash.substring(1)).get("access_token");
+    fetch("https://discord.com/api/users/@me", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(user => {
+      document.getElementById("loginArea").innerHTML = `👤 ${user.username}`;
+      localStorage.setItem("discordUser", user.username);
+      history.replaceState(null, "", REDIRECT_URI);
+    })
+    .catch(() => alert("디스코드 로그인 실패!"));
+  } else {
+    const saved = localStorage.getItem("discordUser");
+    if (saved) document.getElementById("loginArea").innerHTML = `👤 ${saved}`;
+  }
+}
+
+// 페이지 로드 시 자동 로그인 체크
+window.onload = handleDiscordLogin;
+</script>
+
+
+  <div class="worlds" id="worlds">
+    <div class="world" data-world="victoria"><img src="images/victoria.png"><span>빅토리아 아일랜드</span></div>
+    <div class="world" data-world="elnath"><img src="images/elnath.png"><span>엘나스 산맥</span></div>
+    <div class="world" data-world="luduslake"><img src="images/luduslake.png"><span>루더스 호수</span></div>
+    <div class="world" data-world="minar"><img src="images/minar.png"><span>미나르 숲</span></div>
+    <div class="world" data-world="aqua"><img src="images/aqua.png"><span>아쿠아리움</span></div>
+    <div class="world" data-world="nihal"><img src="images/nihal.png"><span>니할 사막</span></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-level="all">전체</div>
+    <div class="tab" data-level="10-30">10~30</div>
+    <div class="tab" data-level="30-50">30~50</div>
+    <div class="tab" data-level="50-80">50~80</div>
+    <div class="tab" data-level="80-100">80~100</div>
+    <div class="tab" data-level="100-130">100~130</div>
+    <div class="tab" data-level="130+">130 이상</div>
+  </div>
+
+  <div class="content">
+    <div class="board">
+      <h2>모집 게시판</h2>
+      <input type="text" id="search" placeholder="검색어를 입력하세요...">
+      <div id="posts"></div>
+      <textarea id="postText" placeholder="모집 내용을 입력하세요..."></textarea>
+      <button onclick="addPost()">글 등록</button>
+      <p id="cooldownMsg"></p>
+    </div>
+    <div class="chat">
+      <h2>실시간 채팅</h2>
+      <div id="chatBox" style="height:250px; overflow-y:auto; background:#222; padding:10px; border-radius:6px;"></div>
+      <input id="chatInput" placeholder="메시지 입력..." />
+      <button onclick="sendChat()">전송</button>
+      <p id="chatCooldownMsg"></p>
+    </div>
+  </div>
+
+<script>
+const CLIENT_ID = "1424448769113456752";
+const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
+const OAUTH_SCOPE = "identify";
+
+function loginWithDiscord() {
+  const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
+  window.location.href = url;
+}
+
+function handleDiscordLogin() {
+  const hash = window.location.hash;
+  if (hash.includes("access_token")) {
+    const token = new URLSearchParams(hash.substring(1)).get("access_token");
+    fetch("https://discord.com/api/users/@me", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(user => {
+      document.getElementById("loginArea").innerHTML = `👤 ${user.username}`;
+      localStorage.setItem("discordUser", user.username);
+      history.replaceState(null, "", REDIRECT_URI);
+    })
+    .catch(() => alert("디스코드 로그인 실패!"));
+  } else {
+    const saved = localStorage.getItem("discordUser");
+    if (saved) document.getElementById("loginArea").innerHTML = `👤 ${saved}`;
+  }
+}
+handleDiscordLogin();
+
+let lastPostTime = 0;
+let lastChatTime = 0;
+let posts = [];
+let worldFilter = "all";
+let levelFilter = "all";
+
+document.querySelectorAll('.world').forEach(w => {
+  w.addEventListener('click', () => {
+    worldFilter = w.dataset.world;
+    renderPosts();
+    history.pushState({ world: worldFilter }, "", "#" + worldFilter);
+  });
+});
+
+window.addEventListener("popstate", (event) => {
+  if (event.state && event.state.world) {
+    worldFilter = event.state.world;
+    renderPosts();
+  } else {
+    worldFilter = "all";
+    renderPosts();
+  }
+});
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    levelFilter = tab.dataset.level;
+    renderPosts();
+  });
+});
+
+function addPost() {
+  const now = Date.now();
+  if (now - lastPostTime < 180000) {
+    document.getElementById('cooldownMsg').innerText = "게시판 쿨타임 3분입니다!";
+    return;
+  }
+  const text = document.getElementById('postText').value.trim();
+  if (!text) return;
+  posts.unshift({ text, world: worldFilter, level: levelFilter, time: new Date().toLocaleTimeString() });
+  document.getElementById('postText').value = '';
+  lastPostTime = now;
+  renderPosts();
+}
+
+function renderPosts() {
+  const list = document.getElementById('posts');
+  const keyword = document.getElementById('search').value.toLowerCase();
+  list.innerHTML = posts.filter(p =>
+    (worldFilter === 'all' || p.world === worldFilter) &&
+    (levelFilter === 'all' || p.level === levelFilter) &&
+    p.text.toLowerCase().includes(keyword)
+  ).map(p => `<div class="post"><h4>[${p.world}] ${p.text}</h4><small>${p.time}</small></div>`).join('');
+}
+document.getElementById('search').addEventListener('input', renderPosts);
+
+function sendChat() {
+  const now = Date.now();
+  if (now - lastChatTime < 60000) {
+    document.getElementById('chatCooldownMsg').innerText = "채팅 쿨타임 1분입니다!";
+    return;
+  }
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const chatBox = document.getElementById('chatBox');
+  chatBox.innerHTML += `<div>💬 ${msg}</div>`;
+  chatBox.scrollTop = chatBox.scrollHeight;
+  input.value = '';
+  lastChatTime = now;
+}
+</script>
+<script>
+  const worldButtons = document.querySelectorAll('.world-btn');
+  let currentWorld = null;
+
+  // 대륙 클릭 시 URL 변경 + 상태 저장
+  worldButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentWorld = btn.dataset.world;
+      showWorldPosts(currentWorld);
+
+      // 주소에 해시 추가
+      history.pushState({ world: currentWorld }, '', '#' + currentWorld);
+    });
+  });
+
+  // 뒤로가기/앞으로가기 감지
+  window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.world) {
+      // 특정 대륙 복귀
+      showWorldPosts(event.state.world);
+    } else {
+      // 기본 메인 화면으로 돌아가기
+      showMainView();
+    }
+  });
+
+  // 페이지 처음 로드될 때 해시가 있으면 자동 이동
+  window.addEventListener('load', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash) showWorldPosts(hash);
+  });
+
+  // 예시용 함수 (실제 네 코드에 맞게 교체)
+  function showWorldPosts(world) {
+    document.querySelector('#main-section').style.display = 'none';
+    document.querySelector(`#${world}-section`).style.display = 'block';
+  }
+
+  function showMainView() {
+    document.querySelectorAll('.world-section').forEach(sec => sec.style.display = 'none');
+    document.querySelector('#main-section').style.display = 'block';
+  }
+</script>
+</body>
+</html>
