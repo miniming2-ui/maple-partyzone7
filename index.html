@@ -1,316 +1,238 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>메랜파티존</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>메랜파티존 | Maple Party Zone</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Pretendard', sans-serif;
-      background-color: #121212;
+      background-color: #111;
       color: #fff;
+      font-family: Pretendard, sans-serif;
+      margin: 0;
+      padding: 0;
     }
     header {
-      text-align: center;
-      padding: 15px;
-      background: #1e1e1e;
-      font-size: 1.8em;
+      background-color: #1e1e1e;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #333;
+    }
+    .logo {
       font-weight: bold;
+      color: #8bc1ff;
+      font-size: 20px;
+    }
+    #loginArea button {
+      background-color: #5865f2;
       color: #fff;
-      border-bottom: 2px solid #333;
-    }
-    .login {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 0.9em;
-    }
-    .login button {
-      background: #5865F2;
       border: none;
-      color: white;
-      padding: 6px 10px;
+      padding: 8px 14px;
       border-radius: 6px;
       cursor: pointer;
     }
-    .worlds {
+    .continent-bar {
       display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      background: #181818;
-      padding: 10px 0;
-      gap: 10px;
+      overflow-x: auto;
+      background-color: #1a1a1a;
+      padding: 10px;
+      border-bottom: 1px solid #333;
+      scrollbar-width: none;
     }
-    .world {
+    .continent-bar img {
+      height: 120px;
+      width: auto;
+      border-radius: 8px;
+      margin-right: 10px;
       cursor: pointer;
-      text-align: center;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s;
     }
-    .world img {
-      width: 120px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 10px;
-      border: 2px solid #444;
+    .continent-bar img:hover {
+      transform: scale(1.03);
     }
-    .world span {
-      display: block;
-      margin-top: 5px;
-      color: #ddd;
-      font-weight: 500;
+    .container {
+      display: flex;
+      padding: 20px;
+      gap: 20px;
     }
-    .world:hover { transform: scale(1.05); }
-    .content { display: flex; max-width: 1200px; margin: 20px auto; gap: 20px; }
-    .board, .chat { flex: 1; background: #1a1a1a; border-radius: 10px; padding: 20px; }
-    .board { flex: 2; }
-    .tabs { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
-    .tab { background: #2b2b2b; color: #aaa; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; }
-    .tab.active { background: #5c9ded; color: #fff; }
+    .board, .chat {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 16px;
+      flex: 1;
+      min-height: 500px;
+    }
+    .board {
+      flex: 2;
+    }
+    h2 {
+      margin-top: 0;
+    }
     input, textarea {
       width: 100%;
       background: #222;
-      border: 1px solid #444;
+      color: #fff;
+      border: 1px solid #333;
       border-radius: 6px;
-      color: white;
       padding: 8px;
+      margin-top: 5px;
+      resize: none;
     }
-    button { background: #5c9ded; border: none; color: #fff; border-radius: 6px; padding: 8px 14px; margin-top: 5px; cursor: pointer; }
-    button:hover { background: #4a8dd8; }
-    .post { background: #222; padding: 10px; border-radius: 6px; margin-bottom: 10px; }
-    .post h4 { margin: 0; }
+    button {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+    .post {
+      background: #222;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    .back-btn {
+      margin-bottom: 10px;
+      display: none;
+      background: #444;
+    }
   </style>
 </head>
 <body>
-  <header>메랜파티존 <span class="login" id="loginArea"><button onclick="loginWithDiscord()">디스코드 로그인</button></span></header>
-
-<!-- 헤더나 오른쪽 상단 영역 -->
-<div id="loginArea" style="position:absolute; top:20px; right:20px;">
-  <button onclick="loginWithDiscord()" 
-          style="background:#5865F2; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer;">
-    디스코드 로그인
-  </button>
-</div>
-
-<script>
-const CLIENT_ID = "1424448769113456752";
-const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
-const OAUTH_SCOPE = "identify";
-
-function loginWithDiscord() {
-  const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
-  window.location.href = url;
-}
-
-function handleDiscordLogin() {
-  const hash = window.location.hash;
-  if (hash.includes("access_token")) {
-    const token = new URLSearchParams(hash.substring(1)).get("access_token");
-    fetch("https://discord.com/api/users/@me", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(user => {
-      document.getElementById("loginArea").innerHTML = `👤 ${user.username}`;
-      localStorage.setItem("discordUser", user.username);
-      history.replaceState(null, "", REDIRECT_URI);
-    })
-    .catch(() => alert("디스코드 로그인 실패!"));
-  } else {
-    const saved = localStorage.getItem("discordUser");
-    if (saved) document.getElementById("loginArea").innerHTML = `👤 ${saved}`;
-  }
-}
-
-// 페이지 로드 시 자동 로그인 체크
-window.onload = handleDiscordLogin;
-</script>
-
-
-  <div class="worlds" id="worlds">
-    <div class="world" data-world="victoria"><img src="images/victoria.png"><span>빅토리아 아일랜드</span></div>
-    <div class="world" data-world="elnath"><img src="images/elnath.png"><span>엘나스 산맥</span></div>
-    <div class="world" data-world="luduslake"><img src="images/luduslake.png"><span>루더스 호수</span></div>
-    <div class="world" data-world="minar"><img src="images/minar.png"><span>미나르 숲</span></div>
-    <div class="world" data-world="aqua"><img src="images/aqua.png"><span>아쿠아리움</span></div>
-    <div class="world" data-world="nihal"><img src="images/nihal.png"><span>니할 사막</span></div>
-  </div>
-
-  <div class="tabs">
-    <div class="tab active" data-level="all">전체</div>
-    <div class="tab" data-level="10-30">10~30</div>
-    <div class="tab" data-level="30-50">30~50</div>
-    <div class="tab" data-level="50-80">50~80</div>
-    <div class="tab" data-level="80-100">80~100</div>
-    <div class="tab" data-level="100-130">100~130</div>
-    <div class="tab" data-level="130+">130 이상</div>
-  </div>
-
-  <div class="content">
-    <div class="board">
-      <h2>모집 게시판</h2>
-      <input type="text" id="search" placeholder="검색어를 입력하세요...">
-      <div id="posts"></div>
-      <textarea id="postText" placeholder="모집 내용을 입력하세요..."></textarea>
-      <button onclick="addPost()">글 등록</button>
-      <p id="cooldownMsg"></p>
+  <header>
+    <div class="logo">🌸 메랜파티존</div>
+    <div id="loginArea">
+      <button onclick="loginWithDiscord()">디스코드 로그인</button>
     </div>
+  </header>
+
+  <div class="continent-bar">
+    <img src="./images/victoria.png" alt="빅토리아" onclick="openContinent('빅토리아')">
+    <img src="./images/elnath.png" alt="엘나스" onclick="openContinent('엘나스')">
+    <img src="./images/luduslake.png" alt="루더스 호수" onclick="openContinent('루더스 호수')">
+    <img src="./images/minar.png" alt="미나르 숲" onclick="openContinent('미나르 숲')">
+    <img src="./images/aqua.png" alt="아쿠아 로드" onclick="openContinent('아쿠아 로드')">
+    <img src="./images/nihal.png" alt="니할 사막" onclick="openContinent('니할 사막')">
+  </div>
+
+  <div class="container">
+    <div class="board">
+      <button class="back-btn" id="backBtn" onclick="goBack()">← 뒤로가기</button>
+      <h2 id="boardTitle">메인 - 전체 모집</h2>
+      <p id="boardDesc">레벨대별 탭은 메인에서만 표시됩니다</p>
+      <div>
+        <input type="text" id="postTitle" placeholder="제목을 입력하세요">
+        <textarea id="postContent" placeholder="모집 내용"></textarea>
+        <button onclick="addPost()">모집 등록</button>
+      </div>
+      <div id="postList"></div>
+    </div>
+
     <div class="chat">
       <h2>실시간 채팅</h2>
-      <div id="chatBox" style="height:250px; overflow-y:auto; background:#222; padding:10px; border-radius:6px;"></div>
-      <input id="chatInput" placeholder="메시지 입력..." />
+      <div id="chatBox" style="min-height:300px; background:#222; padding:8px; border-radius:6px;"></div>
+      <textarea id="chatInput" placeholder="메시지를 입력하세요"></textarea>
       <button onclick="sendChat()">전송</button>
-      <p id="chatCooldownMsg"></p>
     </div>
   </div>
 
-<script>
-const CLIENT_ID = "1424448769113456752";
-const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
-const OAUTH_SCOPE = "identify";
+  <script>
+  const CLIENT_ID = "1424448769113456752";
+  const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
+  const OAUTH_SCOPE = "identify";
 
-function loginWithDiscord() {
-  const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
-  window.location.href = url;
-}
-
-function handleDiscordLogin() {
-  const hash = window.location.hash;
-  if (hash.includes("access_token")) {
-    const token = new URLSearchParams(hash.substring(1)).get("access_token");
-    fetch("https://discord.com/api/users/@me", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(user => {
-      document.getElementById("loginArea").innerHTML = `👤 ${user.username}`;
-      localStorage.setItem("discordUser", user.username);
-      history.replaceState(null, "", REDIRECT_URI);
-    })
-    .catch(() => alert("디스코드 로그인 실패!"));
-  } else {
-    const saved = localStorage.getItem("discordUser");
-    if (saved) document.getElementById("loginArea").innerHTML = `👤 ${saved}`;
+  function loginWithDiscord() {
+    const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
+    window.location.href = url;
   }
-}
-handleDiscordLogin();
 
-let lastPostTime = 0;
-let lastChatTime = 0;
-let posts = [];
-let worldFilter = "all";
-let levelFilter = "all";
-
-document.querySelectorAll('.world').forEach(w => {
-  w.addEventListener('click', () => {
-    worldFilter = w.dataset.world;
-    renderPosts();
-    history.pushState({ world: worldFilter }, "", "#" + worldFilter);
-  });
-});
-
-window.addEventListener("popstate", (event) => {
-  if (event.state && event.state.world) {
-    worldFilter = event.state.world;
-    renderPosts();
-  } else {
-    worldFilter = "all";
-    renderPosts();
-  }
-});
-
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    levelFilter = tab.dataset.level;
-    renderPosts();
-  });
-});
-
-function addPost() {
-  const now = Date.now();
-  if (now - lastPostTime < 180000) {
-    document.getElementById('cooldownMsg').innerText = "게시판 쿨타임 3분입니다!";
-    return;
-  }
-  const text = document.getElementById('postText').value.trim();
-  if (!text) return;
-  posts.unshift({ text, world: worldFilter, level: levelFilter, time: new Date().toLocaleTimeString() });
-  document.getElementById('postText').value = '';
-  lastPostTime = now;
-  renderPosts();
-}
-
-function renderPosts() {
-  const list = document.getElementById('posts');
-  const keyword = document.getElementById('search').value.toLowerCase();
-  list.innerHTML = posts.filter(p =>
-    (worldFilter === 'all' || p.world === worldFilter) &&
-    (levelFilter === 'all' || p.level === levelFilter) &&
-    p.text.toLowerCase().includes(keyword)
-  ).map(p => `<div class="post"><h4>[${p.world}] ${p.text}</h4><small>${p.time}</small></div>`).join('');
-}
-document.getElementById('search').addEventListener('input', renderPosts);
-
-function sendChat() {
-  const now = Date.now();
-  if (now - lastChatTime < 60000) {
-    document.getElementById('chatCooldownMsg').innerText = "채팅 쿨타임 1분입니다!";
-    return;
-  }
-  const input = document.getElementById('chatInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-  const chatBox = document.getElementById('chatBox');
-  chatBox.innerHTML += `<div>💬 ${msg}</div>`;
-  chatBox.scrollTop = chatBox.scrollHeight;
-  input.value = '';
-  lastChatTime = now;
-}
-</script>
-<script>
-  const worldButtons = document.querySelectorAll('.world-btn');
-  let currentWorld = null;
-
-  // 대륙 클릭 시 URL 변경 + 상태 저장
-  worldButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentWorld = btn.dataset.world;
-      showWorldPosts(currentWorld);
-
-      // 주소에 해시 추가
-      history.pushState({ world: currentWorld }, '', '#' + currentWorld);
-    });
-  });
-
-  // 뒤로가기/앞으로가기 감지
-  window.addEventListener('popstate', (event) => {
-    if (event.state && event.state.world) {
-      // 특정 대륙 복귀
-      showWorldPosts(event.state.world);
+  function handleDiscordLogin() {
+    const hash = window.location.hash;
+    if (hash.includes("access_token")) {
+      const token = new URLSearchParams(hash.substring(1)).get("access_token");
+      fetch("https://discord.com/api/users/@me", {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(user => {
+        document.getElementById("loginArea").innerHTML = `👤 ${user.username}`;
+        localStorage.setItem("discordUser", user.username);
+        history.replaceState(null, "", REDIRECT_URI);
+      })
+      .catch(() => alert("디스코드 로그인 실패!"));
     } else {
-      // 기본 메인 화면으로 돌아가기
-      showMainView();
+      const saved = localStorage.getItem("discordUser");
+      if (saved) document.getElementById("loginArea").innerHTML = `👤 ${saved}`;
     }
-  });
-
-  // 페이지 처음 로드될 때 해시가 있으면 자동 이동
-  window.addEventListener('load', () => {
-    const hash = window.location.hash.replace('#', '');
-    if (hash) showWorldPosts(hash);
-  });
-
-  // 예시용 함수 (실제 네 코드에 맞게 교체)
-  function showWorldPosts(world) {
-    document.querySelector('#main-section').style.display = 'none';
-    document.querySelector(`#${world}-section`).style.display = 'block';
   }
 
-  function showMainView() {
-    document.querySelectorAll('.world-section').forEach(sec => sec.style.display = 'none');
-    document.querySelector('#main-section').style.display = 'block';
+  // 게시판 / 채팅
+  const posts = {};
+  const chatMessages = [];
+
+  function addPost() {
+    const title = document.getElementById("postTitle").value;
+    const content = document.getElementById("postContent").value;
+    if (!title || !content) return alert("제목과 내용을 입력해주세요.");
+    const current = document.getElementById("boardTitle").textContent;
+    if (!posts[current]) posts[current] = [];
+    posts[current].push({ title, content, time: new Date().toLocaleString() });
+    renderPosts(current);
+    document.getElementById("postTitle").value = "";
+    document.getElementById("postContent").value = "";
   }
-</script>
+
+  function renderPosts(area) {
+    const list = document.getElementById("postList");
+    list.innerHTML = "";
+    (posts[area] || []).forEach(p => {
+      list.innerHTML += `<div class='post'><b>${p.title}</b><br>${p.content}<br><small>${p.time}</small></div>`;
+    });
+  }
+
+  function sendChat() {
+    const input = document.getElementById("chatInput");
+    if (!input.value.trim()) return;
+    const user = localStorage.getItem("discordUser") || "익명";
+    chatMessages.push({ user, text: input.value });
+    renderChat();
+    input.value = "";
+  }
+
+  function renderChat() {
+    const box = document.getElementById("chatBox");
+    box.innerHTML = chatMessages.map(c => `<div><b>${c.user}:</b> ${c.text}</div>`).join("");
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // 대륙 이동 + 뒤로가기
+  let historyStack = [];
+  function openContinent(name) {
+    historyStack.push(document.getElementById("boardTitle").textContent);
+    document.getElementById("boardTitle").textContent = `${name} 모집`;
+    document.getElementById("boardDesc").textContent = "선택한 대륙의 모집글만 표시됩니다";
+    document.getElementById("backBtn").style.display = "block";
+    renderPosts(`${name} 모집`);
+    history.pushState({ page: name }, "", `#${encodeURIComponent(name)}`);
+  }
+
+  function goBack() {
+    const prev = historyStack.pop();
+    if (prev) {
+      document.getElementById("boardTitle").textContent = prev;
+      document.getElementById("boardDesc").textContent = "레벨대별 탭은 메인에서만 표시됩니다";
+      document.getElementById("backBtn").style.display = "none";
+      renderPosts(prev);
+      history.pushState({ page: "main" }, "", "#main");
+    }
+  }
+
+  window.onload = handleDiscordLogin;
+  window.onpopstate = () => goBack();
+  </script>
 </body>
 </html>
