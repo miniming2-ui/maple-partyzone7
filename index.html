@@ -1,234 +1,310 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>메랜파티존</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Pretendard', sans-serif;
-      background-color: #121212;
-      color: #fff;
-    }
-    header {
-      text-align: center;
-      padding: 15px;
-      background: #1e1e1e;
-      font-size: 1.8em;
-      font-weight: bold;
-      color: #fff;
-      border-bottom: 2px solid #333;
-    }
-    .worlds {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      background: #181818;
-      padding: 10px 0;
-      gap: 10px;
-    }
-    .world {
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.2s ease;
-    }
-    .world img {
-      width: 120px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 10px;
-      border: 2px solid #444;
-    }
-    .world span {
-      display: block;
-      margin-top: 5px;
-      color: #ddd;
-      font-weight: 500;
-    }
-    .world:hover { transform: scale(1.05); }
-
-    .content {
-      display: flex;
-      max-width: 1200px;
-      margin: 20px auto;
-      gap: 20px;
-    }
-
-    .board, .chat {
-      flex: 1;
-      background: #1a1a1a;
-      border-radius: 10px;
-      padding: 20px;
-    }
-
-    .board {
-      flex: 2;
-    }
-
-    .board h2, .chat h2 {
-      margin-bottom: 10px;
-      border-bottom: 1px solid #333;
-      padding-bottom: 5px;
-    }
-
-    input, textarea {
-      width: 100%;
-      background: #222;
-      border: 1px solid #444;
-      border-radius: 6px;
-      color: white;
-      padding: 8px;
-    }
-
-    button {
-      background: #5c9ded;
-      border: none;
-      color: #fff;
-      border-radius: 6px;
-      padding: 8px 14px;
-      margin-top: 5px;
-      cursor: pointer;
-    }
-    button:hover { background: #4a8dd8; }
-
-    .tabs {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 20px;
-    }
-    .tab {
-      background: #2b2b2b;
-      color: #aaa;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.9em;
-    }
-    .tab.active {
-      background: #5c9ded;
-      color: #fff;
-    }
-    .post {
-      background: #222;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-    .post h4 { margin: 0; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>메랜파티존 - MapleLand Party Zone</title>
+<meta name="description" content="메이플랜드 대륙별/레벨별 파티모집 - 메랜파티존" />
+<style>
+:root{--bg:#0f1113;--card:#17181a;--muted:#bfc5cc;--accent:#5865F2;--accent-2:#3E86FF;--text:#EAEAEA;}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter, 'Noto Sans KR', sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-bottom:1px solid rgba(255,255,255,0.02)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--accent);font-size:1.2rem}
+.controls{display:flex;align-items:center;gap:12px}
+.btn{background:var(--accent);border:none;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:700;color:white}
+.container{max-width:1200px;margin:20px auto;padding:0 18px}
+.world-bar{display:flex;gap:12px;overflow:auto;padding:12px 0;margin-bottom:14px}
+.world{flex:0 0 180px;height:110px;border-radius:10px;background-size:cover;background-position:center;position:relative;cursor:pointer;border:2px solid rgba(255,255,255,0.03)}
+.world .label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;text-shadow:0 2px 6px rgba(0,0,0,0.7);color:white}
+.main-grid{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+.card{background:var(--card);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tab{padding:8px 12px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-weight:700}
+.tab.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+.search-row{display:flex;gap:8px;margin-bottom:12px}
+.search-row input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+.post{margin-bottom:12px;padding:12px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border-left:4px solid rgba(255,255,255,0.02)}
+.post .meta{font-size:13px;color:var(--muted);margin-top:8px;display:flex;justify-content:space-between}
+.chat-column{display:flex;flex-direction:column;height:calc(100vh - 220px)}
+.chat-list{overflow:auto;padding:8px;flex:1;display:flex;flex-direction:column;gap:10px}
+.chat-item{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px}
+.small{font-size:13px;color:var(--muted)}
+.hidden{display:none !important}
+.footer{text-align:center;padding:12px;color:var(--muted);font-size:13px;margin-top:18px}
+@media(max-width:980px){.main-grid{grid-template-columns:1fr} .chat-column{height:auto} .world{flex:0 0 140px}}
+</style>
 </head>
 <body>
-
-  <header>메랜파티존</header>
-
-  <div class="worlds">
-    <div class="world" data-world="victoria"><img src="images/victoria.png"><span>빅토리아 아일랜드</span></div>
-    <div class="world" data-world="elnath"><img src="images/elnath.png"><span>엘나스 산맥</span></div>
-    <div class="world" data-world="luduslake"><img src="images/luduslake.png"><span>루더스 호수</span></div>
-    <div class="world" data-world="minar"><img src="images/minar.png"><span>미나르 숲</span></div>
-    <div class="world" data-world="aqua"><img src="images/aqua.png"><span>아쿠아리움</span></div>
-    <div class="world" data-world="nihal"><img src="images/nihal.png"><span>니할 사막</span></div>
-  </div>
-
-  <div class="tabs">
-    <div class="tab active" data-level="all">전체</div>
-    <div class="tab" data-level="10-30">10~30</div>
-    <div class="tab" data-level="30-50">30~50</div>
-    <div class="tab" data-level="50-80">50~80</div>
-    <div class="tab" data-level="80-100">80~100</div>
-    <div class="tab" data-level="100-130">100~130</div>
-    <div class="tab" data-level="130+">130 이상</div>
-  </div>
-
-  <div class="content">
-    <div class="board">
-      <h2>모집 게시판</h2>
-      <input type="text" id="search" placeholder="검색어를 입력하세요...">
-      <div id="posts"></div>
-      <textarea id="postText" placeholder="모집 내용을 입력하세요..."></textarea>
-      <button onclick="addPost()">글 등록</button>
-      <p id="cooldownMsg"></p>
-    </div>
-
-    <div class="chat">
-      <h2>실시간 채팅</h2>
-      <div id="chatBox" style="height:250px; overflow-y:auto; background:#222; padding:10px; border-radius:6px;"></div>
-      <input id="chatInput" placeholder="메시지 입력..." />
-      <button onclick="sendChat()">전송</button>
-      <p id="chatCooldownMsg"></p>
+<header class="header">
+  <div class="logo">🍁 메랜파티존</div>
+  <div class="controls" id="authControls">
+    <button class="btn" id="loginBtn">Discord 로그인</button>
+    <div id="userArea" style="display:none;align-items:center;gap:10px">
+      <img id="userAvatar" src="" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid rgba(255,255,255,0.04)"/>
+      <div id="userName" style="font-weight:700"></div>
+      <button id="logoutBtn" class="btn" style="background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)">로그아웃</button>
     </div>
   </div>
+</header>
+
+<div class="container">
+  <div id="mainView">
+    <div class="world-bar" id="worldBar">
+      <div class="world" data-id="victoria" style="background-image:url('./images/victoria.png')"><div class="label">빅토리아</div></div>
+      <div class="world" data-id="elnath" style="background-image:url('./images/elnath.png')"><div class="label">엘나스</div></div>
+      <div class="world" data-id="luduslake" style="background-image:url('./images/luduslake.png')"><div class="label">루더스 호수</div></div>
+      <div class="world" data-id="minar" style="background-image:url('./images/minar.png')"><div class="label">미나르 숲</div></div>
+      <div class="world" data-id="aqua" style="background-image:url('./images/aqua.png')"><div class="label">아쿠아 로드</div></div>
+      <div class="world" data-id="nihal" style="background-image:url('./images/nihal.png')"><div class="label">니할 사막</div></div>
+    </div>
+
+    <div class="main-grid">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:800;font-size:18px">메인 - 전체 모집</div>
+            <div class="small">레벨대별 탭은 메인에서만 표시됩니다</div>
+          </div>
+          <div class="small">게시글 쿨타임: 3분 · 채팅 쿨타임: 1분</div>
+        </div>
+
+        <div id="levelTabs" class="tabs" style="margin-top:12px"></div>
+
+        <div id="writeArea" style="margin-top:10px">
+          <div class="search-row" style="margin-bottom:8px">
+            <input id="postSearch" placeholder="검색 (제목/내용/작성자)"/>
+            <button id="clearSearch" class="tab">초기화</button>
+          </div>
+          <input id="postTitle" placeholder="제목을 입력하세요" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"/>
+          <textarea id="postContent" rows="3" placeholder="모집 내용" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"></textarea>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="submitPost" class="btn">모집 등록</button>
+            <div id="postCooldown" class="small" style="margin-left:auto"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" id="postsList"></div>
+      </div>
+
+      <aside class="chat-column">
+        <div class="card" style="height:100%;display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div><div style="font-weight:800">실시간 채팅</div><div class="small">쿨타임: <strong>1분</strong></div></div>
+            <div class="small">로그인 후 채팅 가능</div>
+          </div>
+
+          <div id="chatList" class="chat-list"></div>
+
+          <textarea id="chatInput" rows="3" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+            <button id="sendChat" class="btn">전송</button>
+            <div id="chatCooldown" class="small"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div id="regionView" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div>
+        <div id="regionTitle" style="font-weight:800;font-size:18px">지역 모집</div>
+        <div class="small">선택한 대륙의 모집글만 표시됩니다</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button id="backBtn" class="tab">메인으로 돌아가기</button>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <div class="card">
+        <div class="search-row" style="margin-bottom:8px">
+          <input id="regionSearch" placeholder="검색 (제목/내용/작성자)"/>
+          <button id="clearRegionSearch" class="tab">초기화</button>
+        </div>
+
+        <div id="regionWrite" style="margin-top:8px">
+          <input id="regionPostTitle" placeholder="제목" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"/>
+          <textarea id="regionPostContent" rows="3" placeholder="내용" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"></textarea>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="regionSubmit" class="btn">모집 등록</button>
+            <div id="regionPostCooldown" class="small" style="margin-left:auto"></div>
+          </div>
+        </div>
+
+        <div id="regionPosts"></div>
+      </div>
+
+      <aside class="chat-column">
+        <div class="card" style="height:100%;display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div><div style="font-weight:800">실시간 채팅 (지역)</div><div class="small">선택된 지역의 채팅</div></div>
+            <div class="small">로그인 후 채팅 가능</div>
+          </div>
+
+          <div id="regionChatList" class="chat-list"></div>
+
+          <textarea id="regionChatInput" rows="3" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+            <button id="regionSendChat" class="btn">전송</button>
+            <div id="regionChatCooldown" class="small"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="footer">© 2025 메랜파티존</div>
+</div>
 
 <script>
-let lastPostTime = 0;
-let lastChatTime = 0;
-let posts = [];
-let worldFilter = "all";
-let levelFilter = "all";
+/* settings */
+const CLIENT_ID = "1424448769113456752";
+const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone/";
+const OAUTH_SCOPE = "identify";
 
-document.querySelectorAll('.world').forEach(w => {
-  w.addEventListener('click', () => {
-    worldFilter = w.dataset.world;
-    renderPosts();
-  });
-});
+/* UI refs */
+const worldEls = document.querySelectorAll('.world');
+const levelTabsEl = document.getElementById('levelTabs');
+const postsList = document.getElementById('postsList');
+const postTitle = document.getElementById('postTitle');
+const postContent = document.getElementById('postContent');
+const postSearch = document.getElementById('postSearch');
+const clearSearch = document.getElementById('clearSearch');
+const submitPost = document.getElementById('submitPost');
+const postCooldownEl = document.getElementById('postCooldown');
 
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    levelFilter = tab.dataset.level;
-    renderPosts();
-  });
-});
+const chatList = document.getElementById('chatList');
+const chatInput = document.getElementById('chatInput');
+const sendChat = document.getElementById('sendChat');
+const chatCooldownEl = document.getElementById('chatCooldown');
 
-function addPost() {
-  const now = Date.now();
-  if (now - lastPostTime < 180000) {
-    document.getElementById('cooldownMsg').innerText = "게시판 쿨타임 3분입니다!";
-    return;
-  }
-  const text = document.getElementById('postText').value.trim();
-  if (!text) return;
-  posts.unshift({ text, world: worldFilter, level: levelFilter, time: new Date().toLocaleTimeString() });
-  document.getElementById('postText').value = '';
-  lastPostTime = now;
-  document.getElementById('cooldownMsg').innerText = '';
-  renderPosts();
+const mainView = document.getElementById('mainView');
+const regionView = document.getElementById('regionView');
+const regionTitle = document.getElementById('regionTitle');
+const backBtn = document.getElementById('backBtn');
+
+const regionSearch = document.getElementById('regionSearch');
+const regionPosts = document.getElementById('regionPosts');
+const regionPostTitle = document.getElementById('regionPostTitle');
+const regionPostContent = document.getElementById('regionPostContent');
+const regionSubmit = document.getElementById('regionSubmit');
+const regionChatList = document.getElementById('regionChatList');
+const regionChatInput = document.getElementById('regionChatInput');
+const regionSendChat = document.getElementById('regionSendChat');
+const regionPostCooldown = document.getElementById('regionPostCooldown');
+const regionChatCooldown = document.getElementById('regionChatCooldown');
+
+const loginBtn = document.getElementById('loginBtn');
+const userArea = document.getElementById('userArea');
+const userAvatar = document.getElementById('userAvatar');
+const userName = document.getElementById('userName');
+const logoutBtn = document.getElementById('logoutBtn');
+
+/* config */
+const LEVEL_TABS = ['10~30','30~50','50~80','80~100','100~130','130 이상'];
+const REGIONS = ['victoria','elnath','luduslake','minar','aqua','nihal'];
+
+let activeLevel = LEVEL_TABS[0];
+let activeRegion = null;
+let currentUser = null;
+
+/* cooldowns (minutes) */
+const POST_CD_MIN = 3;
+const CHAT_CD_MIN = 1;
+
+/* storage keys */
+const POSTS_KEY = 'mpz_final_posts';
+const CHATS_KEY = 'mpz_final_chats';
+const USER_KEY = 'mpz_final_user';
+const POST_CD_KEY = 'mpz_final_post_cd';
+const CHAT_CD_KEY = 'mpz_final_chat_cd';
+const REGION_POST_CD_KEY = 'mpz_final_region_post_cd';
+const REGION_CHAT_CD_KEY = 'mpz_final_region_chat_cd';
+const TOKEN_KEY = 'mpz_final_token';
+
+/* utils */
+function now(){return Date.now();}
+function setCooldown(key, minutes){ localStorage.setItem(key, String(Date.now()+minutes*60*1000)); }
+function getRemainingMs(key){ const v=parseInt(localStorage.getItem(key)||'0',10); const rem=v-Date.now(); return rem>0?rem:0; }
+function formatMinutes(ms){ return (ms/60000).toFixed(1); }
+function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* storage helpers */
+function loadPosts(){ return JSON.parse(localStorage.getItem(POSTS_KEY) || '[]'); }
+function savePosts(arr){ localStorage.setItem(POSTS_KEY, JSON.stringify(arr)); }
+function loadChats(){ return JSON.parse(localStorage.getItem(CHATS_KEY) || '[]'); }
+function saveChats(arr){ localStorage.setItem(CHATS_KEY, JSON.stringify(arr)); }
+function saveUser(u){ localStorage.setItem(USER_KEY, JSON.stringify(u)); }
+function loadUser(){ try{return JSON.parse(localStorage.getItem(USER_KEY)||'null')}catch(e){return null} }
+
+/* render level tabs */
+function initLevelTabs(){
+  levelTabsEl.innerHTML='';
+  LEVEL_TABS.forEach(l=>{ const b=document.createElement('button'); b.className='tab'+(l===activeLevel?' active':''); b.textContent=l; b.addEventListener('click',()=>{ activeLevel=l; document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderPosts(); }); levelTabsEl.appendChild(b); });
 }
 
-function renderPosts() {
-  const list = document.getElementById('posts');
-  const keyword = document.getElementById('search').value.toLowerCase();
-  list.innerHTML = posts.filter(p =>
-    (worldFilter === 'all' || p.world === worldFilter) &&
-    (levelFilter === 'all' || p.level === levelFilter) &&
-    p.text.toLowerCase().includes(keyword)
-  ).map(p => `
-    <div class="post"><h4>[${p.world}] ${p.text}</h4><small>${p.time}</small></div>
-  `).join('');
+/* render posts (main) */
+function renderPosts(){
+  const all=loadPosts(); postsList.innerHTML=''; const search=(postSearch.value||'').trim().toLowerCase();
+  const filtered=all.filter(p=>!p.region && p.level===activeLevel).filter(p=>{ if(!search) return true; const hay=(p.title+' '+p.content+' '+(p.author?.username||'')).toLowerCase(); return hay.indexOf(search)!==-1; });
+  if(filtered.length===0){ postsList.innerHTML='<div class="small">해당 레벨대에 등록된 모집글이 없습니다.</div>'; return; }
+  filtered.forEach(p=>{ const d=document.createElement('div'); d.className='post'; d.innerHTML=`<div style="font-weight:800">${escapeHtml(p.title)}</div><div style="margin-top:6px">${escapeHtml(p.content)}</div><div class="meta"><div>작성자: <strong>${escapeHtml(p.author?.username||'익명')}</strong></div><div>${new Date(p.ts).toLocaleString()}</div></div>`; postsList.appendChild(d); });
 }
-document.getElementById('search').addEventListener('input', renderPosts);
 
-function sendChat() {
-  const now = Date.now();
-  if (now - lastChatTime < 60000) {
-    document.getElementById('chatCooldownMsg').innerText = "채팅 쿨타임 1분입니다!";
-    return;
-  }
-  const input = document.getElementById('chatInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-  const chatBox = document.getElementById('chatBox');
-  chatBox.innerHTML += `<div>💬 ${msg}</div>`;
-  chatBox.scrollTop = chatBox.scrollHeight;
-  input.value = '';
-  lastChatTime = now;
-  document.getElementById('chatCooldownMsg').innerText = '';
+/* render region posts */
+function renderRegionPosts(){ const all=loadPosts(); regionPosts.innerHTML=''; const search=(regionSearch.value||'').trim().toLowerCase();
+  const filtered=all.filter(p=>p.region===activeRegion).filter(p=>{ if(!search) return true; const hay=(p.title+' '+p.content+' '+(p.author?.username||'')).toLowerCase(); return hay.indexOf(search)!==-1; });
+  if(filtered.length===0){ regionPosts.innerHTML='<div class="small">해당 지역에 등록된 모집글이 없습니다.</div>'; return; }
+  filtered.forEach(p=>{ const d=document.createElement('div'); d.className='post'; d.innerHTML=`<div style="font-weight:800">${escapeHtml(p.title)}</div><div style="margin-top:6px">${escapeHtml(p.content)}</div><div class="meta"><div>작성자: <strong>${escapeHtml(p.author?.username||'익명')}</strong></div><div>${new Date(p.ts).toLocaleString()}</div></div>`; regionPosts.appendChild(d); });
 }
+
+/* render chats */
+function renderChats(){ const arr=loadChats().filter(c=>!c.region && c.level===activeLevel); chatList.innerHTML=''; if(arr.length===0){ chatList.innerHTML='<div class="small">대화가 없습니다.</div>'; return; } arr.forEach(c=>{ const el=document.createElement('div'); el.className='chat-item'; el.innerHTML=`<strong>${escapeHtml(c.author?.username||'익명')}</strong>: ${escapeHtml(c.text)}<div class="small" style="margin-top:6px">${new Date(c.ts).toLocaleString()}</div>`; chatList.appendChild(el); }); }
+function renderRegionChats(){ const arr=loadChats().filter(c=>c.region===activeRegion); regionChatList.innerHTML=''; if(arr.length===0){ regionChatList.innerHTML='<div class="small">대화가 없습니다.</div>'; return; } arr.forEach(c=>{ const el=document.createElement('div'); el.className='chat-item'; el.innerHTML=`<strong>${escapeHtml(c.author?.username||'익명')}</strong>: ${escapeHtml(c.text)}<div class="small" style="margin-top:6px">${new Date(c.ts).toLocaleString()}</div>`; regionChatList.appendChild(el); }); }
+
+/* submit main post */
+submitPost.addEventListener('click', ()=>{ const user=loadUser(); if(!user) return alert('글 작성은 로그인 후 가능합니다.'); if(getRemainingMs(POST_CD_KEY)>0) return alert('게시글 쿨타임이 적용중입니다.'); const title=postTitle.value.trim(); const content=postContent.value.trim(); if(!title||!content) return alert('제목/내용을 입력하세요.'); const posts=loadPosts(); posts.unshift({id:'p_'+Date.now(),region:null,level:activeLevel,title,content,author:user,ts:Date.now()}); savePosts(posts); setCooldown(POST_CD_KEY,POST_CD_MIN); postTitle.value=''; postContent.value=''; renderPosts(); });
+
+/* submit region post */
+regionSubmit.addEventListener('click', ()=>{ const user=loadUser(); if(!user) return alert('글 작성은 로그인 후 가능합니다.'); if(getRemainingMs(REGION_POST_CD_KEY)>0) return alert('지역 게시글 쿨타임이 적용중입니다.'); const title=regionPostTitle.value.trim(); const content=regionPostContent.value.trim(); if(!title||!content) return alert('제목/내용을 입력하세요.'); const posts=loadPosts(); posts.unshift({id:'p_'+Date.now(),region:activeRegion,level:null,title,content,author:user,ts:Date.now()}); savePosts(posts); setCooldown(REGION_POST_CD_KEY,POST_CD_MIN); regionPostTitle.value=''; regionPostContent.value=''; renderRegionPosts(); });
+
+/* send chat main */
+sendChat.addEventListener('click', ()=>{ const user=loadUser(); if(!user) return alert('채팅은 로그인 후 가능합니다.'); if(getRemainingMs(CHAT_CD_KEY)>0) return alert('채팅 쿨타임이 적용중입니다.'); const txt=chatInput.value.trim(); if(!txt) return; const arr=loadChats(); arr.unshift({id:'c_'+Date.now(),region:null,level:activeLevel,text:txt,author:user,ts:Date.now()}); saveChats(arr); setCooldown(CHAT_CD_KEY,CHAT_CD_MIN); chatInput.value=''; renderChats(); });
+
+/* send chat region */
+regionSendChat.addEventListener('click', ()=>{ const user=loadUser(); if(!user) return alert('채팅은 로그인 후 가능합니다.'); if(getRemainingMs(REGION_CHAT_CD_KEY)>0) return alert('채팅 쿨타임이 적용중입니다.'); const txt=regionChatInput.value.trim(); if(!txt) return; const arr=loadChats(); arr.unshift({id:'c_'+Date.now(),region:activeRegion,level:null,text:txt,author:user,ts:Date.now()}); saveChats(arr); setCooldown(REGION_CHAT_CD_KEY,CHAT_CD_MIN); regionChatInput.value=''; renderRegionChats(); });
+
+/* cooldown UI updater */
+function updateCooldownUI(){ const rp=getRemainingMs(POST_CD_KEY); const rc=getRemainingMs(CHAT_CD_KEY); const rrp=getRemainingMs(REGION_POST_CD_KEY); const rrc=getRemainingMs(REGION_CHAT_CD_KEY); postCooldownEl.textContent=rp>0?`게시글 쿨타임: ${formatMinutes(rp)}분 남음` : ''; chatCooldownEl.textContent=rc>0?`채팅 쿨타임: ${formatMinutes(rc)}분 남음` : ''; regionPostCooldown.textContent=rrp>0?`게시글 쿨타임: ${formatMinutes(rrp)}분 남음` : ''; regionChatCooldown.textContent=rrc>0?`채팅 쿨타임: ${formatMinutes(rrc)}분 남음` : ''; submitPost.disabled=rp>0; sendChat.disabled=rc>0; regionSubmit.disabled=rrp>0; regionSendChat.disabled=rrc>0; }
+setInterval(updateCooldownUI,1000);
+
+/* search handlers */
+postSearch.addEventListener('input', renderPosts);
+clearSearch.addEventListener('click', ()=>{ postSearch.value=''; renderPosts(); });
+regionSearch.addEventListener('input', renderRegionPosts);
+clearRegionSearch.addEventListener('click', ()=>{ regionSearch.value=''; renderRegionPosts(); });
+
+/* region selection */
+worldEls.forEach(w=>w.addEventListener('click',()=>{ activeRegion=w.dataset.id; document.getElementById('regionTitle').textContent=w.querySelector('.label').textContent+' 모집'; mainView.classList.add('hidden'); regionView.classList.remove('hidden'); renderRegionPosts(); renderRegionChats(); }));
+
+backBtn.addEventListener('click', ()=>{ activeRegion=null; mainView.classList.remove('hidden'); regionView.classList.add('hidden'); renderPosts(); renderChats(); });
+
+/* OAuth helpers */
+function buildAuthUrl(){ const base='https://discord.com/oauth2/authorize'; const params=new URLSearchParams({ client_id:CLIENT_ID, redirect_uri:REDIRECT_URI, response_type:'token', scope:OAUTH_SCOPE }); return base+'?'+params.toString(); }
+function handleAuthFromHash(){ const hash=location.hash.substring(1); if(!hash) return false; const params=new URLSearchParams(hash); const token=params.get('access_token'); if(token){ localStorage.setItem(TOKEN_KEY, token); history.replaceState(null,'', REDIRECT_URI); return true; } return false; }
+async function fetchDiscordUser(token){ try{ const res=await fetch('https://discord.com/api/users/@me',{ headers:{ Authorization:'Bearer '+token } }); if(!res.ok) return null; return await res.json(); }catch(e){console.error(e); return null;} }
+async function tryAutoLogin(){ const token=localStorage.getItem(TOKEN_KEY); if(!token) return; const u=await fetchDiscordUser(token); if(u){ const user={ id:u.id, username:u.username+(u.discriminator?('#'+u.discriminator):''), avatar:u.avatar?`https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png`:'' }; saveUser(user); currentUser=user; renderAuth(); } else { localStorage.removeItem(TOKEN_KEY); } }
+function renderAuth(){ const u=loadUser(); if(u){ currentUser=u; loginBtn.style.display='none'; userArea.style.display='flex'; userAvatar.src=u.avatar||''; userName.textContent=u.username; } else { loginBtn.style.display='inline-block'; userArea.style.display='none'; } }
+loginBtn.addEventListener('click', ()=>{ location.href = buildAuthUrl(); });
+logoutBtn.addEventListener('click', ()=>{ localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); currentUser=null; renderAuth(); });
+
+/* init */
+(function init(){ initLevelTabs(); if(loadPosts().length===0){ savePosts([{id:'s1',region:null,level:'10~30',title:'초보 파티',content:'초보 환영',author:{username:'샘플#1'},ts:Date.now()-3600000},{id:'s2',region:'victoria',level:null,title:'빅토리아 보스',content:'보스 모집',author:{username:'보스#2'},ts:Date.now()-7200000}]); }
+if(loadChats().length===0){ saveChats([{id:'c1',region:null,level:'10~30',text:'메인 채팅 샘플',author:{username:'샘플#chat'},ts:Date.now()-300000}]); }
+if(handleAuthFromHash()){ tryAutoLogin().then(()=>renderAuth()); } else { tryAutoLogin().then(()=>renderAuth()); }
+renderPosts(); renderChats(); updateCooldownUI(); })();
 </script>
-
 </body>
 </html>
