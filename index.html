@@ -1,399 +1,297 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>메랜파티존 | Maple Party Zone</title>
-  <meta name="description" content="메이플랜드 파티모집 - 메랜파티존" />
-  <meta name="robots" content="index,follow" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>메랜파티존 | Mapleland Party Zone</title>
   <style>
-    :root{
-      --page-bg:#d5d5d5; /* 요청한 톤 */
-      --card-bg:#ffffff;
-      --muted:#6b6b6b;
-      --accent:#5865F2;
-      --text:#111;
+    body {
+      background-color: #121212;
+      color: #e6e6e6;
+      font-family: "Pretendard", sans-serif;
+      margin: 0;
+      padding: 0;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter, 'Noto Sans KR', system-ui, sans-serif;
-      background:var(--page-bg);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
+
+    header {
+      background-color: #1c1c1c;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
     }
-    header{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:12px 20px;background:transparent;border-bottom:1px solid rgba(0,0,0,0.06);
+
+    header h1 {
+      cursor: pointer;
+      font-size: 20px;
+      color: #e6e6e6;
     }
-    .logo{
-      font-weight:800;color:var(--text);font-size:1.2rem;cursor:pointer;
+
+    #loginArea button {
+      background-color: #5865F2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
     }
-    #loginArea{display:flex;align-items:center;gap:8px}
-    #loginArea button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:white;cursor:pointer}
-    .worlds{display:flex;gap:12px;overflow:auto;padding:12px 20px}
-    .world{flex:0 0 160px;height:90px;border-radius:8px;background-size:cover;background-position:center;position:relative;cursor:pointer;border:1px solid rgba(0,0,0,0.06)}
-    .world .label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;text-shadow:0 2px 6px rgba(0,0,0,0.5)}
-    .container{max-width:1100px;margin:20px auto;padding:0 18px}
-    .card{background:var(--card-bg);padding:18px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04)}
-    .main-grid{display:block;gap:18px}
-    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    .tab{padding:8px 12px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-weight:700;border:1px solid rgba(0,0,0,0.04)}
-    .tab.active{background:linear-gradient(90deg,var(--accent),#3e86ff);color:white}
-    input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:#f6f6f6;color:var(--text);font-size:14px;line-height:1.4}
-    textarea{min-height:100px;resize:vertical}
-    .actions{display:flex;gap:8px;align-items:center;margin-top:10px}
-    button.primary{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
-    .small{font-size:13px;color:var(--muted)}
-    .post{margin-bottom:12px;padding:12px;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,0.03)}
-    .post .meta{margin-top:8px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:center}
-    a.author{color:var(--accent);text-decoration:none;font-weight:700}
-    @media(max-width:980px){ .world{flex:0 0 130px} .container{padding:0 12px} }
+
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    h2 {
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    #searchBox {
+      display: flex;
+      align-items: center;
+      background-color: #2a2a2a;
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin-bottom: 15px;
+    }
+
+    #searchInput {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 14px;
+      padding-left: 5px;
+    }
+
+    #searchIcon {
+      color: #aaa;
+      font-size: 16px;
+      margin-right: 6px;
+    }
+
+    #postInput {
+      width: 100%;
+      height: 200px;
+      resize: none;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background-color: #2a2a2a;
+      color: #fff;
+      padding: 10px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    #postButton {
+      background-color: #5865F2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+
+    ul#postList {
+      list-style: none;
+      padding: 0;
+    }
+
+    .post {
+      background: #252525;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .post p {
+      white-space: pre-line;
+      line-height: 1.5;
+      font-size: 15px;
+      margin: 5px 0;
+      color: #e6e6e6;
+    }
+
+    .post span {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .discordUser {
+      color: #5865F2;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo" id="logoBtn">🍁 메랜파티존</div>
+    <h1 id="homeLink">메랜파티존</h1>
     <div id="loginArea">
-      <button id="loginBtn">디스코드 로그인</button>
+      <button onclick="loginWithDiscord()">디스코드 로그인</button>
     </div>
   </header>
 
-  <div class="worlds" id="worldBar">
-    <div class="world" data-id="victoria" style="background-image:url('./images/victoria.png')"><div class="label">빅토리아</div></div>
-    <div class="world" data-id="elnath" style="background-image:url('./images/elnath.png')"><div class="label">엘나스</div></div>
-    <div class="world" data-id="luduslake" style="background-image:url('./images/luduslake.png')"><div class="label">루더스 호수</div></div>
-    <div class="world" data-id="minar" style="background-image:url('./images/minar.png')"><div class="label">미나르 숲</div></div>
-    <div class="world" data-id="aqua" style="background-image:url('./images/aqua.png')"><div class="label">아쿠아 로드</div></div>
-    <div class="world" data-id="nihal" style="background-image:url('./images/nihal.png')"><div class="label">니할 사막</div></div>
-  </div>
+  <main>
+    <h2>모집 게시판</h2>
 
-  <div class="container">
-    <div id="mainView" class="card main-grid">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-weight:800;font-size:18px">메인 - 전체 모집</div>
-          <div class="small">레벨대별 탭은 메인에서만 표시됩니다</div>
-        </div>
-        <div class="small">게시글 쿨타임: 3분</div>
-      </div>
-
-      <div id="levelTabs" class="tabs"></div>
-
-      <div id="writeArea" style="margin-top:12px">
-        <!-- 제목칸 제거, 내용만 -->
-        <textarea id="postContent" placeholder="모집 내용을 입력하세요. (최대 4줄 허용)"></textarea>
-        <div class="actions">
-          <button id="submitPost" class="primary">모집 등록</button>
-          <div id="postCooldown" class="small" style="margin-left:auto"></div>
-        </div>
-      </div>
-
-      <div id="postsList" style="margin-top:16px"></div>
+    <div id="searchBox">
+      <span id="searchIcon">🔍</span>
+      <input id="searchInput" type="text" placeholder="작성자 또는 내용을 검색하세요" />
     </div>
 
-    <!-- region view -->
-    <div id="regionView" class="hidden card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div>
-          <div id="regionTitle" style="font-weight:800;font-size:18px">지역 모집</div>
-          <div class="small">선택한 대륙의 모집글만 표시됩니다</div>
-        </div>
-        <div>
-          <button id="backBtn" class="tab">메인으로 돌아가기</button>
-        </div>
-      </div>
+    <textarea id="postInput" placeholder="모집 내용을 입력하세요 (최대 8줄)"></textarea><br>
+    <button id="postButton">모집 등록</button>
 
-      <div id="regionWrite" style="margin-top:8px">
-        <textarea id="regionPostContent" rows="4" placeholder="지역 모집 내용을 입력하세요. (최대 4줄)"></textarea>
-        <div class="actions">
-          <button id="regionSubmit" class="primary">모집 등록</button>
-          <div id="regionPostCooldown" class="small" style="margin-left:auto"></div>
-        </div>
-      </div>
+    <ul id="postList"></ul>
+  </main>
 
-      <div id="regionPosts" style="margin-top:12px"></div>
-    </div>
-  </div>
+  <script>
+    const CLIENT_ID = "1424448769113456752";
+    const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
+    const OAUTH_SCOPE = "identify";
 
-  <!-- Firebase modular SDK -->
+    function loginWithDiscord() {
+      const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
+      window.location.href = url;
+    }
+
+    function logoutDiscord() {
+      localStorage.removeItem("discordUser");
+      localStorage.removeItem("discordId");
+      document.getElementById("loginArea").innerHTML = `<button onclick="loginWithDiscord()">디스코드 로그인</button>`;
+    }
+
+    function handleDiscordLogin() {
+      const hash = window.location.hash;
+      if (hash.includes("access_token")) {
+        const token = new URLSearchParams(hash.substring(1)).get("access_token");
+        fetch("https://discord.com/api/users/@me", {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(user => {
+          const username = user.global_name || user.username;
+          document.getElementById("loginArea").innerHTML = `
+            <span style="color:white;display:flex;align-items:center;gap:8px;">
+              <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" width="20" height="20">
+              ${username}
+              <button onclick="logoutDiscord()" style="margin-left:10px;background:#ff5f5f;border:none;border-radius:6px;padding:4px 8px;color:white;">로그아웃</button>
+            </span>
+          `;
+          localStorage.setItem("discordUser", username);
+          localStorage.setItem("discordId", user.id);
+          history.replaceState(null, "", REDIRECT_URI);
+        })
+        .catch(() => alert("디스코드 로그인 실패!"));
+      } else {
+        const saved = localStorage.getItem("discordUser");
+        if (saved) {
+          document.getElementById("loginArea").innerHTML = `
+            <span style="color:white;display:flex;align-items:center;gap:8px;">
+              <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" width="20" height="20">
+              ${saved}
+              <button onclick="logoutDiscord()" style="margin-left:10px;background:#ff5f5f;border:none;border-radius:6px;padding:4px 8px;color:white;">로그아웃</button>
+            </span>
+          `;
+        }
+      }
+    }
+    handleDiscordLogin();
+
+    document.getElementById("homeLink").addEventListener("click", () => {
+      window.location.href = REDIRECT_URI;
+    });
+  </script>
+
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-    // ========== firebaseConfig (이미 제공하신 값) ==========
     const firebaseConfig = {
       apiKey: "AIzaSyB059CBnkyxlsJZbMfbBK5AJ_s4XKbYGcI",
-      authDomain: "maple-party-zone.firebaseapp.com".replace("maple-party-zone","maple-partyzone"), // safe fallback in case import mismatch
+      authDomain: "maple-partyzone.firebaseapp.com",
       projectId: "maple-partyzone",
       storageBucket: "maple-partyzone.firebasestorage.app",
       messagingSenderId: "853981783847",
       appId: "1:853981783847:web:2305406459583a8f072b02",
       measurementId: "G-CNGYW8FF27"
     };
-    // ======================================================
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* ===== config ===== */
-    const CLIENT_ID = "1424448769113456752";
-    const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
-    const OAUTH_SCOPE = "identify";
-    const LEVEL_TABS = ['10~30','30~50','50~80','80~100','100~130','130 이상'];
-    const REGIONS = ['victoria','elnath','luduslake','minar','aqua','nihal'];
+    const postList = document.getElementById("postList");
+    const postInput = document.getElementById("postInput");
+    const postButton = document.getElementById("postButton");
+    const searchInput = document.getElementById("searchInput");
 
-    /* ===== UI refs ===== */
-    const worldEls = document.querySelectorAll('.world');
-    const levelTabsEl = document.getElementById('levelTabs');
-    const postsList = document.getElementById('postsList');
-    const postContent = document.getElementById('postContent');
-    const postSearch = null;
-    const clearSearch = null;
-    const submitPost = document.getElementById('submitPost');
-    const postCooldownEl = document.getElementById('postCooldown');
+    let postsData = [];
 
-    const mainView = document.getElementById('mainView');
-    const regionView = document.getElementById('regionView');
-    const regionTitle = document.getElementById('regionTitle');
-    const backBtn = document.getElementById('backBtn');
+    async function loadPosts() {
+      postList.innerHTML = "";
+      const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
+      postsData = [];
+      snapshot.forEach(doc => {
+        postsData.push(doc.data());
+      });
+      renderPosts(postsData);
+    }
 
-    const regionPostContent = document.getElementById('regionPostContent');
-    const regionSubmit = document.getElementById('regionSubmit');
-    const regionPosts = document.getElementById('regionPosts');
-    const regionPostCooldown = document.getElementById('regionPostCooldown');
-
-    const loginBtn = document.getElementById('loginBtn');
-    const loginArea = document.getElementById('loginArea');
-    const logoBtn = document.getElementById('logoBtn');
-
-    /* ===== cooldowns (ms) ===== */
-    const POST_CD_MS = 3 * 60 * 1000;
-
-    /* ===== storage keys ===== */
-    const USER_KEY = 'mpz_user';
-    const POSTS_COLL = 'posts';
-
-    /* ===== helpers ===== */
-    function now(){ return Date.now(); }
-    function setCooldown(key, ms){ localStorage.setItem(key, String(Date.now()+ms)); }
-    function getRemainingMs(key){ const v = parseInt(localStorage.getItem(key)||'0',10); const rem = v - Date.now(); return rem>0?rem:0; }
-    function formatMinutes(ms){ return Math.max( (ms/60000).toFixed(1), 0 ); }
-    function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-    function saveUser(u){ localStorage.setItem(USER_KEY, JSON.stringify(u)); }
-    function loadUser(){ try{ return JSON.parse(localStorage.getItem(USER_KEY)||'null'); }catch(e){return null} }
-
-    /* ===== level tabs ===== */
-    function initLevelTabs(){
-      levelTabsEl.innerHTML = '';
-      LEVEL_TABS.forEach((l,i)=>{
-        const b = document.createElement('button');
-        b.className = 'tab' + (i===0? ' active':'');
-        b.textContent = l;
-        b.addEventListener('click', ()=> {
-          document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active'));
-          b.classList.add('active');
-          renderPosts();
-        });
-        levelTabsEl.appendChild(b);
+    function renderPosts(data) {
+      postList.innerHTML = "";
+      data.forEach(post => {
+        const date = post.timestamp?.toDate().toLocaleString("ko-KR") || "방금 전";
+        const author = post.author || "익명";
+        const authorId = post.discordId ? post.discordId : "";
+        const dmLink = authorId ? `https://discord.com/users/${authorId}` : "#";
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <div class="post">
+            <p>${post.content.replace(/\n/g, "<br>")}</p>
+            <span><a class="discordUser" href="${dmLink}" target="_blank">${author}</a> | 🕒 ${date}</span>
+          </div>
+        `;
+        postList.appendChild(li);
       });
     }
 
-    /* ===== Firestore listeners ===== */
-    const postsRef = collection(db, POSTS_COLL);
-    const qAll = query(postsRef, orderBy('createdAtTS','desc')); // order by server timestamp for reliable ordering
-
-    let cachedPosts = [];
-    onSnapshot(qAll, snapshot => {
-      cachedPosts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      // render depending on view
-      if(mainView.classList.contains('hidden')){
-        renderRegionPosts();
-      } else {
-        renderPosts();
-      }
-    }, err => {
-      console.error('Firestore snapshot error', err);
-    });
-
-    /* ===== render functions ===== */
-    function limitLinesToHtml(text, maxLines=4){
-      const lines = escapeHtml(text).split(/\r?\n/).map(s=>s.trim()).slice(0,maxLines);
-      return lines.join('<br>');
-    }
-
-    function renderPosts(){
-      postsList.innerHTML = '';
-      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
-      const filtered = cachedPosts.filter(p => p.type === 'board' && !p.region && p.level === levelActive);
-      if(filtered.length===0){
-        postsList.innerHTML = '<div class="small">해당 레벨대에 등록된 모집글이 없습니다.</div>';
-        return;
-      }
-      filtered.forEach(p => {
-        const created = p.createdAtISO ? new Date(p.createdAtISO) : (p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : new Date());
-        const authorLink = p.authorId ? `<a class="author" href="https://discord.com/users/${p.authorId}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.authorName||'익명')}</a>` : `<span class="small">${escapeHtml(p.authorName||'익명')}</span>`;
-        const contentHtml = limitLinesToHtml(p.content,4);
-        const div = document.createElement('div'); div.className='post';
-        div.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorLink}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
-        postsList.appendChild(div);
+    postButton.addEventListener("click", async () => {
+      const content = postInput.value.trim();
+      if (!content) return alert("내용을 입력하세요!");
+      const author = localStorage.getItem("discordUser") || "익명";
+      const discordId = localStorage.getItem("discordId") || "";
+      await addDoc(collection(db, "posts"), {
+        content,
+        author,
+        discordId,
+        timestamp: serverTimestamp()
       });
-    }
-
-    function renderRegionPosts(){
-      regionPosts.innerHTML = '';
-      if(!activeRegion) return;
-      const filtered = cachedPosts.filter(p => p.type === 'board' && p.region === activeRegion);
-      if(filtered.length===0){ regionPosts.innerHTML = '<div class="small">해당 지역에 등록된 모집글이 없습니다.</div>'; return; }
-      filtered.forEach(p=>{
-        const created = p.createdAtISO ? new Date(p.createdAtISO) : (p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : new Date());
-        const authorLink = p.authorId ? `<a class="author" href="https://discord.com/users/${p.authorId}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.authorName||'익명')}</a>` : `<span class="small">${escapeHtml(p.authorName||'익명')}</span>`;
-        const contentHtml = limitLinesToHtml(p.content,4);
-        const d = document.createElement('div'); d.className='post';
-        d.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorLink}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
-        regionPosts.appendChild(d);
-      });
-    }
-
-    /* ===== create doc helper (store createdAtISO + serverTimestamp) ===== */
-    async function createPostDoc(obj){
-      try{
-        await addDoc(postsRef, { ...obj, createdAtISO: new Date().toISOString(), createdAtTS: serverTimestamp() });
-      }catch(e){
-        console.error('addDoc error', e);
-        alert('서버에 저장하지 못했습니다.');
-      }
-    }
-
-    /* ===== posting (main) ===== */
-    submitPost.addEventListener('click', async ()=>{
-      const user = loadUser();
-      if(!user) return alert('글 작성은 로그인 후 가능합니다.');
-      if(getRemainingMs('post_cd')>0) return alert('게시글 쿨타임이 적용중입니다.');
-      const content = postContent.value.trim();
-      if(!content) return alert('내용을 입력하세요.');
-      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
-      await createPostDoc({ type:'board', content, authorId:user.id||null, authorName:user.username||'익명', level:levelActive, region:null });
-      setCooldown('post_cd', POST_CD_MS);
-      postContent.value='';
+      postInput.value = "";
+      loadPosts();
     });
 
-    /* ===== posting (region) ===== */
-    regionSubmit.addEventListener('click', async ()=>{
-      const user = loadUser();
-      if(!user) return alert('글 작성은 로그인 후 가능합니다.');
-      if(getRemainingMs('post_cd')>0) return alert('게시글 쿨타임이 적용중입니다.');
-      const content = regionPostContent.value.trim();
-      if(!content) return alert('내용을 입력하세요.');
-      await createPostDoc({ type:'board', content, authorId:user.id||null, authorName:user.username||'익명', level:null, region:activeRegion });
-      setCooldown('post_cd', POST_CD_MS);
-      regionPostContent.value='';
+    searchInput.addEventListener("input", () => {
+      const term = searchInput.value.toLowerCase();
+      const filtered = postsData.filter(
+        p =>
+          p.content.toLowerCase().includes(term) ||
+          (p.author && p.author.toLowerCase().includes(term))
+      );
+      renderPosts(filtered);
     });
 
-    /* ===== cooldown UI updater ===== */
-    setInterval(()=> {
-      const rem = getRemainingMs('post_cd');
-      postCooldownEl.textContent = rem>0 ? `게시글 쿨타임: ${ (rem/60000).toFixed(1) }분 남음` : '';
-    }, 1000);
-
-    /* ===== region selection + history ===== */
-    let activeRegion = null;
-    worldEls.forEach(w => w.addEventListener('click', ()=>{
-      activeRegion = w.dataset.id;
-      document.getElementById('regionTitle').textContent = w.querySelector('.label').textContent + ' 모집';
-      mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-      renderRegionPosts();
-      history.pushState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
-    }));
-
-    backBtn.addEventListener('click', ()=> {
-      history.back();
-    });
-
-    window.addEventListener('popstate', (e)=>{
-      if(e.state && e.state.region){
-        activeRegion = e.state.region;
-        mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-        renderRegionPosts();
-      } else {
-        activeRegion = null;
-        mainView.classList.remove('hidden'); regionView.classList.add('hidden');
-        renderPosts();
-      }
-    });
-
-    // logo click -> go main
-    logoBtn.addEventListener('click', ()=> {
-      activeRegion = null;
-      mainView.classList.remove('hidden'); regionView.classList.add('hidden');
-      history.pushState({}, '', REDIRECT_URI);
-      renderPosts();
-    });
-
-    // on load: open region if hash exists
-    window.addEventListener('load', ()=>{
-      initLevelTabs();
-      const hash = decodeURIComponent(location.hash.replace('#','')) || '';
-      if(hash && REGIONS.includes(hash)){
-        activeRegion = hash;
-        document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${hash}"] .label`).textContent + ' 모집';
-        mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-        renderRegionPosts();
-        history.replaceState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
-      }
-      // try login session
-      tryHandleDiscordLogin();
-    });
-
-    /* ===== Discord login flow (implicit) ===== */
-    loginBtn.addEventListener('click', ()=> {
-      const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
-      window.location.href = url;
-    });
-
-    async function tryHandleDiscordLogin(){
-      const hash = window.location.hash || '';
-      if(hash.includes('access_token')){
-        try{
-          const params = new URLSearchParams(hash.replace('#',''));
-          const token = params.get('access_token');
-          // fetch user info
-          const res = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
-          if(!res.ok) throw new Error('discord fetch failed');
-          const user = await res.json();
-          // prefer global_name, fallback username
-          const displayName = user.global_name || user.username;
-          const avatarUrl = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png';
-          const u = { id: user.id, username: displayName, avatar: avatarUrl, token };
-          saveUser(u);
-          renderLoginArea(u);
-          // remove token from url
-          history.replaceState(null,'',REDIRECT_URI);
-        }catch(err){
-          console.error(err);
-          alert('디스코드 로그인 실패 — Redirect/Implicit 설정을 확인하세요.');
-          history.replaceState(null,'',REDIRECT_URI);
-        }
-      } else {
-        const u = loadUser();
-        if(u) renderLoginArea(u);
-      }
-    }
-
-    function renderLoginArea(user){
-      loginArea.innerHTML = `
-        <img src="${user.avatar}" alt="avatar" width="28" height="28" style="border-radius:6px;object-fit:cover;vertical-align:middle">
-        <span style="font-weight:700;margin-left:6px">${escapeHtml(user.username)}</span>
-        <button id="logoutBtn" style="background:#2f3136;color:white;border:none;padding:6px 8px;border-radius:8px;cursor:pointer">로그아웃</button>
-      `;
-      document.getElementById('logoutBtn').addEventListener('click', ()=> {
-        localStorage.removeItem(USER_KEY);
-        // also remove access token if stored in url or localStorage (we store only user)
-        location.reload();
-      });
-    }
-
+    window.addEventListener("DOMContentLoaded", loadPosts);
   </script>
 </body>
 </html>
