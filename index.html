@@ -7,40 +7,59 @@
   <meta name="description" content="메이플랜드 파티모집 - 메랜파티존" />
   <meta name="robots" content="index,follow" />
   <style>
-    :root{--bg:#0f1113;--card:#17181a;--muted:#bfc5cc;--accent:#5865F2;--text:#EAEAEA;}
+    :root{
+      --page-bg:#d5d5d5; /* 요청한 톤 */
+      --card-bg:#ffffff;
+      --muted:#6b6b6b;
+      --accent:#5865F2;
+      --text:#111;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter, 'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-    header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-bottom:1px solid rgba(255,255,255,0.02)}
-    .logo{font-weight:800;color:var(--accent);font-size:1.2rem}
-    #loginArea button{background:var(--accent);border:none;padding:8px 12px;border-radius:10px;cursor:pointer;color:white}
-    .worlds{display:flex;gap:12px;overflow:auto;padding:12px;background:#131313}
-    .world{flex:0 0 160px;height:90px;border-radius:10px;background-size:cover;background-position:center;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
-    .world .label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:white;text-shadow:0 2px 6px rgba(0,0,0,0.6)}
-    .container{max-width:1200px;margin:20px auto;padding:0 18px}
-    .main-grid{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
-    .card{background:var(--card);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-    .tab{padding:8px 12px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-weight:700}
+    body{
+      margin:0;
+      font-family:Inter, 'Noto Sans KR', system-ui, sans-serif;
+      background:var(--page-bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+    }
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 20px;background:transparent;border-bottom:1px solid rgba(0,0,0,0.06);
+    }
+    .logo{
+      font-weight:800;color:var(--text);font-size:1.2rem;cursor:pointer;
+    }
+    #loginArea{display:flex;align-items:center;gap:8px}
+    #loginArea button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:white;cursor:pointer}
+    .worlds{display:flex;gap:12px;overflow:auto;padding:12px 20px}
+    .world{flex:0 0 160px;height:90px;border-radius:8px;background-size:cover;background-position:center;position:relative;cursor:pointer;border:1px solid rgba(0,0,0,0.06)}
+    .world .label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;text-shadow:0 2px 6px rgba(0,0,0,0.5)}
+    .container{max-width:1100px;margin:20px auto;padding:0 18px}
+    .card{background:var(--card-bg);padding:18px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04)}
+    .main-grid{display:block;gap:18px}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .tab{padding:8px 12px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-weight:700;border:1px solid rgba(0,0,0,0.04)}
     .tab.active{background:linear-gradient(90deg,var(--accent),#3e86ff);color:white}
-    input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#161616;color:var(--text)}
-    button.primary{background:var(--accent);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
-    .post{margin-bottom:12px;padding:12px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+    input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:#f6f6f6;color:var(--text);font-size:14px;line-height:1.4}
+    textarea{min-height:100px;resize:vertical}
+    .actions{display:flex;gap:8px;align-items:center;margin-top:10px}
+    button.primary{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
     .small{font-size:13px;color:var(--muted)}
-    .hidden{display:none !important}
-    @media(max-width:980px){.main-grid{grid-template-columns:1fr} .world{flex:0 0 140px}}
+    .post{margin-bottom:12px;padding:12px;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,0.03)}
+    .post .meta{margin-top:8px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:center}
+    a.author{color:var(--accent);text-decoration:none;font-weight:700}
+    @media(max-width:980px){ .world{flex:0 0 130px} .container{padding:0 12px} }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">🍁 메랜파티존</div>
+    <div class="logo" id="logoBtn">🍁 메랜파티존</div>
     <div id="loginArea">
       <button id="loginBtn">디스코드 로그인</button>
     </div>
   </header>
 
-  <!-- World bar -->
   <div class="worlds" id="worldBar">
-    <!-- images loaded via JS / or keep matching filenames in /images -->
     <div class="world" data-id="victoria" style="background-image:url('./images/victoria.png')"><div class="label">빅토리아</div></div>
     <div class="world" data-id="elnath" style="background-image:url('./images/elnath.png')"><div class="label">엘나스</div></div>
     <div class="world" data-id="luduslake" style="background-image:url('./images/luduslake.png')"><div class="label">루더스 호수</div></div>
@@ -50,429 +69,330 @@
   </div>
 
   <div class="container">
-    <div id="mainView">
-      <div class="main-grid">
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div style="font-weight:800;font-size:18px">메인 - 전체 모집</div>
-              <div class="small">레벨대별 탭은 메인에서만 표시됩니다</div>
-            </div>
-            <div class="small">게시글 쿨타임: 3분 · 채팅 쿨타임: 1분</div>
-          </div>
-
-          <div id="levelTabs" class="tabs" style="margin-top:12px"></div>
-
-          <div id="writeArea" style="margin-top:10px">
-            <div style="display:flex;gap:8px;margin-bottom:8px">
-              <input id="postSearch" placeholder="검색 (제목/내용/작성자)"/>
-              <button id="clearSearch" class="tab">초기화</button>
-            </div>
-            <input id="postTitle" placeholder="제목을 입력하세요" />
-            <textarea id="postContent" rows="3" placeholder="모집 내용"></textarea>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-              <button id="submitPost" class="primary">모집 등록</button>
-              <div id="postCooldown" class="small" style="margin-left:auto"></div>
-            </div>
-          </div>
-
-          <div style="margin-top:12px" id="postsList"></div>
+    <div id="mainView" class="card main-grid">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:800;font-size:18px">메인 - 전체 모집</div>
+          <div class="small">레벨대별 탭은 메인에서만 표시됩니다</div>
         </div>
-
-        <aside class="card" style="width:100%;display:flex;flex-direction:column">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <div><div style="font-weight:800">실시간 채팅</div><div class="small">쿨타임: <strong>1분</strong></div></div>
-            <div class="small">로그인 후 채팅 가능</div>
-          </div>
-
-          <div id="chatList" style="flex:1;overflow:auto;padding:8px;background:#0f1113;border-radius:8px;margin-bottom:8px"></div>
-
-          <textarea id="chatInput" rows="3" placeholder="메시지를 입력하세요..."></textarea>
-          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-            <button id="sendChat" class="primary">전송</button>
-            <div id="chatCooldown" class="small"></div>
-          </div>
-        </aside>
+        <div class="small">게시글 쿨타임: 3분</div>
       </div>
+
+      <div id="levelTabs" class="tabs"></div>
+
+      <div id="writeArea" style="margin-top:12px">
+        <!-- 제목칸 제거, 내용만 -->
+        <textarea id="postContent" placeholder="모집 내용을 입력하세요. (최대 4줄 허용)"></textarea>
+        <div class="actions">
+          <button id="submitPost" class="primary">모집 등록</button>
+          <div id="postCooldown" class="small" style="margin-left:auto"></div>
+        </div>
+      </div>
+
+      <div id="postsList" style="margin-top:16px"></div>
     </div>
 
     <!-- region view -->
-    <div id="regionView" class="hidden">
+    <div id="regionView" class="hidden card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div>
           <div id="regionTitle" style="font-weight:800;font-size:18px">지역 모집</div>
           <div class="small">선택한 대륙의 모집글만 표시됩니다</div>
         </div>
-        <div style="display:flex;gap:8px">
+        <div>
           <button id="backBtn" class="tab">메인으로 돌아가기</button>
         </div>
       </div>
 
-      <div class="main-grid">
-        <div class="card">
-          <div style="display:flex;gap:8px;margin-bottom:8px">
-            <input id="regionSearch" placeholder="검색 (제목/내용/작성자)"/>
-            <button id="clearRegionSearch" class="tab">초기화</button>
-          </div>
-
-          <div id="regionWrite" style="margin-top:8px">
-            <input id="regionPostTitle" placeholder="제목" />
-            <textarea id="regionPostContent" rows="3" placeholder="내용"></textarea>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-              <button id="regionSubmit" class="primary">모집 등록</button>
-              <div id="regionPostCooldown" class="small" style="margin-left:auto"></div>
-            </div>
-          </div>
-
-          <div id="regionPosts"></div>
+      <div id="regionWrite" style="margin-top:8px">
+        <textarea id="regionPostContent" rows="4" placeholder="지역 모집 내용을 입력하세요. (최대 4줄)"></textarea>
+        <div class="actions">
+          <button id="regionSubmit" class="primary">모집 등록</button>
+          <div id="regionPostCooldown" class="small" style="margin-left:auto"></div>
         </div>
-
-        <aside class="card" style="width:100%;display:flex;flex-direction:column">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <div><div style="font-weight:800">실시간 채팅 (지역)</div><div class="small">선택된 지역의 채팅</div></div>
-            <div class="small">로그인 후 채팅 가능</div>
-          </div>
-
-          <div id="regionChatList" style="flex:1;overflow:auto;padding:8px;background:#0f1113;border-radius:8px;margin-bottom:8px"></div>
-
-          <textarea id="regionChatInput" rows="3" placeholder="메시지를 입력하세요..."></textarea>
-          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-            <button id="regionSendChat" class="primary">전송</button>
-            <div id="regionChatCooldown" class="small"></div>
-          </div>
-        </aside>
       </div>
-    </div>
 
+      <div id="regionPosts" style="margin-top:12px"></div>
+    </div>
   </div>
 
-  <!-- Firebase JS SDKs (modular) -->
+  <!-- Firebase modular SDK -->
   <script type="module">
-  // Firebase 모듈 import (CDN)
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-  // ---------- 사용자가 제공한 firebaseConfig (이미 제공된 값) ----------
-  const firebaseConfig = {
-    apiKey: "AIzaSyB059CBnkyxlsJZbMfbBK5AJ_s4XKbYGcI",
-    authDomain: "maple-partyzone.firebaseapp.com",
-    projectId: "maple-partyzone",
-    storageBucket: "maple-partyzone.firebasestorage.app",
-    messagingSenderId: "853981783847",
-    appId: "1:853981783847:web:2305406459583a8f072b02",
-    measurementId: "G-CNGYW8FF27"
-  };
-  // --------------------------------------------------------------------
+    // ========== firebaseConfig (이미 제공하신 값) ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyB059CBnkyxlsJZbMfbBK5AJ_s4XKbYGcI",
+      authDomain: "maple-party-zone.firebaseapp.com".replace("maple-party-zone","maple-partyzone"), // safe fallback in case import mismatch
+      projectId: "maple-partyzone",
+      storageBucket: "maple-partyzone.firebasestorage.app",
+      messagingSenderId: "853981783847",
+      appId: "1:853981783847:web:2305406459583a8f072b02",
+      measurementId: "G-CNGYW8FF27"
+    };
+    // ======================================================
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  /* ===== app config ===== */
-  const CLIENT_ID = "1424448769113456752";
-  const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
-  const OAUTH_SCOPE = "identify";
+    /* ===== config ===== */
+    const CLIENT_ID = "1424448769113456752";
+    const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
+    const OAUTH_SCOPE = "identify";
+    const LEVEL_TABS = ['10~30','30~50','50~80','80~100','100~130','130 이상'];
+    const REGIONS = ['victoria','elnath','luduslake','minar','aqua','nihal'];
 
-  const LEVEL_TABS = ['10~30','30~50','50~80','80~100','100~130','130 이상'];
-  const REGIONS = ['victoria','elnath','luduslake','minar','aqua','nihal'];
+    /* ===== UI refs ===== */
+    const worldEls = document.querySelectorAll('.world');
+    const levelTabsEl = document.getElementById('levelTabs');
+    const postsList = document.getElementById('postsList');
+    const postContent = document.getElementById('postContent');
+    const postSearch = null;
+    const clearSearch = null;
+    const submitPost = document.getElementById('submitPost');
+    const postCooldownEl = document.getElementById('postCooldown');
 
-  /* ===== UI refs ===== */
-  const worldEls = document.querySelectorAll('.world');
-  const levelTabsEl = document.getElementById('levelTabs');
-  const postsList = document.getElementById('postsList');
-  const postTitle = document.getElementById('postTitle');
-  const postContent = document.getElementById('postContent');
-  const postSearch = document.getElementById('postSearch');
-  const clearSearch = document.getElementById('clearSearch');
-  const submitPost = document.getElementById('submitPost');
-  const postCooldownEl = document.getElementById('postCooldown');
+    const mainView = document.getElementById('mainView');
+    const regionView = document.getElementById('regionView');
+    const regionTitle = document.getElementById('regionTitle');
+    const backBtn = document.getElementById('backBtn');
 
-  const chatList = document.getElementById('chatList');
-  const chatInput = document.getElementById('chatInput');
-  const sendChat = document.getElementById('sendChat');
-  const chatCooldownEl = document.getElementById('chatCooldown');
+    const regionPostContent = document.getElementById('regionPostContent');
+    const regionSubmit = document.getElementById('regionSubmit');
+    const regionPosts = document.getElementById('regionPosts');
+    const regionPostCooldown = document.getElementById('regionPostCooldown');
 
-  const mainView = document.getElementById('mainView');
-  const regionView = document.getElementById('regionView');
-  const regionTitle = document.getElementById('regionTitle');
-  const backBtn = document.getElementById('backBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginArea = document.getElementById('loginArea');
+    const logoBtn = document.getElementById('logoBtn');
 
-  const regionSearch = document.getElementById('regionSearch');
-  const regionPosts = document.getElementById('regionPosts');
-  const regionPostTitle = document.getElementById('regionPostTitle');
-  const regionPostContent = document.getElementById('regionPostContent');
-  const regionSubmit = document.getElementById('regionSubmit');
-  const regionChatList = document.getElementById('regionChatList');
-  const regionChatInput = document.getElementById('regionChatInput');
-  const regionSendChat = document.getElementById('regionSendChat');
-  const regionPostCooldown = document.getElementById('regionPostCooldown');
-  const regionChatCooldown = document.getElementById('regionChatCooldown');
+    /* ===== cooldowns (ms) ===== */
+    const POST_CD_MS = 3 * 60 * 1000;
 
-  const loginBtn = document.getElementById('loginBtn');
-  const loginArea = document.getElementById('loginArea');
+    /* ===== storage keys ===== */
+    const USER_KEY = 'mpz_user';
+    const POSTS_COLL = 'posts';
 
-  /* ===== cooldowns (minutes) ===== */
-  const POST_CD_MIN = 3;
-  const CHAT_CD_MIN = 1;
+    /* ===== helpers ===== */
+    function now(){ return Date.now(); }
+    function setCooldown(key, ms){ localStorage.setItem(key, String(Date.now()+ms)); }
+    function getRemainingMs(key){ const v = parseInt(localStorage.getItem(key)||'0',10); const rem = v - Date.now(); return rem>0?rem:0; }
+    function formatMinutes(ms){ return Math.max( (ms/60000).toFixed(1), 0 ); }
+    function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
-  /* storage keys */
-  const POSTS_COLL = 'posts';
-  const USER_KEY = 'mpz_final_user';
-  const POST_CD_KEY = 'mpz_final_post_cd';
-  const CHAT_CD_KEY = 'mpz_final_chat_cd';
+    function saveUser(u){ localStorage.setItem(USER_KEY, JSON.stringify(u)); }
+    function loadUser(){ try{ return JSON.parse(localStorage.getItem(USER_KEY)||'null'); }catch(e){return null} }
 
-  /* ===== helpers ===== */
-  function now(){return Date.now();}
-  function setCooldown(key, minutes){ localStorage.setItem(key, String(Date.now()+minutes*60*1000)); }
-  function getRemainingMs(key){ const v = parseInt(localStorage.getItem(key)||'0',10); const rem = v - Date.now(); return rem>0?rem:0; }
-  function formatMinutes(ms){ return (ms/60000).toFixed(1); }
-  function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-  function saveUser(u){ localStorage.setItem(USER_KEY, JSON.stringify(u)); }
-  function loadUser(){ try{return JSON.parse(localStorage.getItem(USER_KEY)||'null')}catch(e){return null} }
-
-  /* ===== level tabs ===== */
-  function initLevelTabs(){
-    levelTabsEl.innerHTML = '';
-    LEVEL_TABS.forEach(l=>{
-      const b = document.createElement('button'); b.className='tab'+(l===LEVEL_TABS[0]?' active':''); b.textContent = l;
-      b.addEventListener('click', ()=>{ document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderPosts(); });
-      levelTabsEl.appendChild(b);
-    });
-  }
-
-  /* ===== Dash: Firestore realtime listeners ===== */
-  // listen all posts (we'll filter in render)
-  const postsRef = collection(db, POSTS_COLL);
-  // order by createdAt desc (serverTimestamp)
-  const qAll = query(postsRef, orderBy('createdAt','desc'));
-
-  let cachedPosts = [];
-
-  onSnapshot(qAll, snapshot => {
-    cachedPosts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    // render currently visible views
-    if(document.getElementById('mainView').classList.contains('hidden')){
-      renderRegionPosts();
-      renderRegionChats();
-    } else {
-      renderPosts();
-      renderChats();
-    }
-  }, err => {
-    console.error('Firestore snapshot error', err);
-  });
-
-  /* ===== render main posts (filter by level) ===== */
-  function renderPosts(){
-    const search = (postSearch.value||'').trim().toLowerCase();
-    const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
-    const filtered = cachedPosts.filter(p => p.type === 'board' && !p.region && p.level === levelActive)
-      .filter(p => {
-        if(!search) return true;
-        const hay = (p.title + ' ' + p.content + ' ' + (p.authorName||'')).toLowerCase();
-        return hay.indexOf(search)!==-1;
+    /* ===== level tabs ===== */
+    function initLevelTabs(){
+      levelTabsEl.innerHTML = '';
+      LEVEL_TABS.forEach((l,i)=>{
+        const b = document.createElement('button');
+        b.className = 'tab' + (i===0? ' active':'');
+        b.textContent = l;
+        b.addEventListener('click', ()=> {
+          document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active'));
+          b.classList.add('active');
+          renderPosts();
+        });
+        levelTabsEl.appendChild(b);
       });
-    postsList.innerHTML = '';
-    if(filtered.length===0){ postsList.innerHTML = '<div class="small">해당 레벨대에 등록된 모집글이 없습니다.</div>'; return; }
-    filtered.forEach(p=>{
-      const d = document.createElement('div'); d.className='post';
-      d.innerHTML = `<div style="font-weight:800">${escapeHtml(p.title)}</div><div style="margin-top:6px">${escapeHtml(p.content)}</div><div class="small" style="margin-top:8px">${escapeHtml(p.authorName||'익명')} · ${new Date(p.createdAt?.toDate ? p.createdAt.toDate() : p.createdAt).toLocaleString()}</div>`;
-      postsList.appendChild(d);
-    });
-  }
-
-  /* ===== render region posts ===== */
-  let activeRegion = null;
-  function renderRegionPosts(){
-    regionPosts.innerHTML = '';
-    if(!activeRegion) return;
-    const search = (regionSearch.value||'').trim().toLowerCase();
-    const filtered = cachedPosts.filter(p => p.type === 'board' && p.region === activeRegion)
-      .filter(p => {
-        if(!search) return true;
-        const hay = (p.title + ' ' + p.content + ' ' + (p.authorName||'')).toLowerCase();
-        return hay.indexOf(search)!==-1;
-      });
-    if(filtered.length===0){ regionPosts.innerHTML = '<div class="small">해당 지역에 등록된 모집글이 없습니다.</div>'; return; }
-    filtered.forEach(p=>{
-      const d = document.createElement('div'); d.className='post';
-      d.innerHTML = `<div style="font-weight:800">${escapeHtml(p.title)}</div><div style="margin-top:6px">${escapeHtml(p.content)}</div><div class="small" style="margin-top:8px">${escapeHtml(p.authorName||'익명')} · ${new Date(p.createdAt?.toDate ? p.createdAt.toDate() : p.createdAt).toLocaleString()}</div>`;
-      regionPosts.appendChild(d);
-    });
-  }
-
-  /* ===== render chats (main) ===== */
-  function renderChats(){
-    chatList.innerHTML = '';
-    const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
-    const arr = cachedPosts.filter(c => c.type === 'chat' && !c.region && c.level === levelActive);
-    if(arr.length===0){ chatList.innerHTML = '<div class="small">대화가 없습니다.</div>'; return; }
-    arr.forEach(c => {
-      const el = document.createElement('div'); el.className='post';
-      el.innerHTML = `<strong>${escapeHtml(c.authorName||'익명')}</strong>: ${escapeHtml(c.content)}<div class="small" style="margin-top:6px">${new Date(c.createdAt?.toDate ? c.createdAt.toDate() : c.createdAt).toLocaleString()}</div>`;
-      chatList.appendChild(el);
-    });
-  }
-
-  function renderRegionChats(){
-    regionChatList.innerHTML = '';
-    const arr = cachedPosts.filter(c => c.type === 'chat' && c.region === activeRegion);
-    if(arr.length===0){ regionChatList.innerHTML = '<div class="small">대화가 없습니다.</div>'; return; }
-    arr.forEach(c => {
-      const el = document.createElement('div'); el.className='post';
-      el.innerHTML = `<strong>${escapeHtml(c.authorName||'익명')}</strong>: ${escapeHtml(c.content)}<div class="small" style="margin-top:6px">${new Date(c.createdAt?.toDate ? c.createdAt.toDate() : c.createdAt).toLocaleString()}</div>`;
-      regionChatList.appendChild(el);
-    });
-  }
-
-  /* ===== create document in posts collection (shared for board+chat) ===== */
-  async function createPostDoc(docObj){
-    try{
-      await addDoc(postsRef, docObj);
-    }catch(e){
-      console.error('addDoc error', e);
-      alert('서버에 글을 저장하지 못했습니다.');
     }
-  }
 
-  /* ===== submit main post (board) ===== */
-  document.getElementById('submitPost').addEventListener('click', async ()=>{
-    const user = loadUser();
-    if(!user) return alert('글 작성은 로그인 후 가능합니다.');
-    if(getRemainingMs(POST_CD_KEY)>0) return alert('게시글 쿨타임이 적용중입니다.');
-    const title = postTitle.value.trim(), content = postContent.value.trim();
-    if(!title || !content) return alert('제목/내용을 입력하세요.');
-    const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
-    await createPostDoc({ type:'board', title, content, authorId:user.id||null, authorName:user.username||'익명', level:levelActive, region:null, createdAt: serverTimestamp() });
-    setCooldown(POST_CD_KEY, POST_CD_MIN);
-    postTitle.value=''; postContent.value='';
-  });
+    /* ===== Firestore listeners ===== */
+    const postsRef = collection(db, POSTS_COLL);
+    const qAll = query(postsRef, orderBy('createdAtTS','desc')); // order by server timestamp for reliable ordering
 
-  /* ===== submit region post ===== */
-  regionSubmit.addEventListener('click', async ()=>{
-    const user = loadUser();
-    if(!user) return alert('글 작성은 로그인 후 가능합니다.');
-    if(getRemainingMs(POST_CD_KEY)>0) return alert('게시글 쿨타임이 적용중입니다.');
-    const title = regionPostTitle.value.trim(), content = regionPostContent.value.trim();
-    if(!title || !content) return alert('제목/내용을 입력하세요.');
-    await createPostDoc({ type:'board', title, content, authorId:user.id||null, authorName:user.username||'익명', level:null, region:activeRegion, createdAt: serverTimestamp() });
-    setCooldown(POST_CD_KEY, POST_CD_MIN);
-    regionPostTitle.value=''; regionPostContent.value='';
-  });
+    let cachedPosts = [];
+    onSnapshot(qAll, snapshot => {
+      cachedPosts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      // render depending on view
+      if(mainView.classList.contains('hidden')){
+        renderRegionPosts();
+      } else {
+        renderPosts();
+      }
+    }, err => {
+      console.error('Firestore snapshot error', err);
+    });
 
-  /* ===== chat send (main) ===== */
-  sendChat.addEventListener('click', async ()=>{
-    const user = loadUser();
-    if(!user) return alert('채팅은 로그인 후 가능합니다.');
-    if(getRemainingMs(CHAT_CD_KEY)>0) return alert('채팅 쿨타임이 적용중입니다.');
-    const txt = chatInput.value.trim(); if(!txt) return;
-    await createPostDoc({ type:'chat', content:txt, authorId:user.id||null, authorName:user.username||'익명', level: document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0], region:null, createdAt: serverTimestamp() });
-    setCooldown(CHAT_CD_KEY, CHAT_CD_MIN); chatInput.value=''; 
-  });
+    /* ===== render functions ===== */
+    function limitLinesToHtml(text, maxLines=4){
+      const lines = escapeHtml(text).split(/\r?\n/).map(s=>s.trim()).slice(0,maxLines);
+      return lines.join('<br>');
+    }
 
-  /* ===== chat send (region) ===== */
-  regionSendChat.addEventListener('click', async ()=>{
-    const user = loadUser();
-    if(!user) return alert('채팅은 로그인 후 가능합니다.');
-    if(getRemainingMs(CHAT_CD_KEY)>0) return alert('채팅 쿨타임이 적용중입니다.');
-    const txt = regionChatInput.value.trim(); if(!txt) return;
-    await createPostDoc({ type:'chat', content:txt, authorId:user.id||null, authorName:user.username||'익명', level:null, region:activeRegion, createdAt: serverTimestamp() });
-    setCooldown(CHAT_CD_KEY, CHAT_CD_MIN); regionChatInput.value='';
-  });
+    function renderPosts(){
+      postsList.innerHTML = '';
+      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
+      const filtered = cachedPosts.filter(p => p.type === 'board' && !p.region && p.level === levelActive);
+      if(filtered.length===0){
+        postsList.innerHTML = '<div class="small">해당 레벨대에 등록된 모집글이 없습니다.</div>';
+        return;
+      }
+      filtered.forEach(p => {
+        const created = p.createdAtISO ? new Date(p.createdAtISO) : (p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : new Date());
+        const authorLink = p.authorId ? `<a class="author" href="https://discord.com/users/${p.authorId}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.authorName||'익명')}</a>` : `<span class="small">${escapeHtml(p.authorName||'익명')}</span>`;
+        const contentHtml = limitLinesToHtml(p.content,4);
+        const div = document.createElement('div'); div.className='post';
+        div.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorLink}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
+        postsList.appendChild(div);
+      });
+    }
 
-  /* ===== cooldown UI updater ===== */
-  function updateCooldownUI(){ const rp=getRemainingMs(POST_CD_KEY); const rc=getRemainingMs(CHAT_CD_KEY);
-    postCooldownEl.textContent = rp>0?`게시글 쿨타임: ${formatMinutes(rp)}분 남음` : '';
-    chatCooldownEl.textContent = rc>0?`채팅 쿨타임: ${formatMinutes(rc)}분 남음` : '';
-    submitPost.disabled = rp>0; sendChat.disabled = rc>0; regionSubmit.disabled = rp>0; regionSendChat.disabled = rc>0;
-  }
-  setInterval(updateCooldownUI,1000);
+    function renderRegionPosts(){
+      regionPosts.innerHTML = '';
+      if(!activeRegion) return;
+      const filtered = cachedPosts.filter(p => p.type === 'board' && p.region === activeRegion);
+      if(filtered.length===0){ regionPosts.innerHTML = '<div class="small">해당 지역에 등록된 모집글이 없습니다.</div>'; return; }
+      filtered.forEach(p=>{
+        const created = p.createdAtISO ? new Date(p.createdAtISO) : (p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : new Date());
+        const authorLink = p.authorId ? `<a class="author" href="https://discord.com/users/${p.authorId}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.authorName||'익명')}</a>` : `<span class="small">${escapeHtml(p.authorName||'익명')}</span>`;
+        const contentHtml = limitLinesToHtml(p.content,4);
+        const d = document.createElement('div'); d.className='post';
+        d.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorLink}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
+        regionPosts.appendChild(d);
+      });
+    }
 
-  /* ===== search handlers ===== */
-  postSearch.addEventListener('input', renderPosts);
-  clearSearch.addEventListener('click', ()=>{ postSearch.value=''; renderPosts(); });
-  regionSearch.addEventListener('input', renderRegionPosts);
-  document.getElementById('clearRegionSearch').addEventListener('click', ()=>{ regionSearch.value=''; renderRegionPosts(); });
+    /* ===== create doc helper (store createdAtISO + serverTimestamp) ===== */
+    async function createPostDoc(obj){
+      try{
+        await addDoc(postsRef, { ...obj, createdAtISO: new Date().toISOString(), createdAtTS: serverTimestamp() });
+      }catch(e){
+        console.error('addDoc error', e);
+        alert('서버에 저장하지 못했습니다.');
+      }
+    }
 
-  /* ===== region selection & history management ===== */
-  worldEls.forEach(w=> w.addEventListener('click', (e)=> {
-    const id = w.dataset.id; activeRegion = id;
-    document.getElementById('regionTitle').textContent = w.querySelector('.label').textContent + ' 모집';
-    mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-    renderRegionPosts(); renderRegionChats();
-    // push state so back button works
-    history.pushState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
-  }));
+    /* ===== posting (main) ===== */
+    submitPost.addEventListener('click', async ()=>{
+      const user = loadUser();
+      if(!user) return alert('글 작성은 로그인 후 가능합니다.');
+      if(getRemainingMs('post_cd')>0) return alert('게시글 쿨타임이 적용중입니다.');
+      const content = postContent.value.trim();
+      if(!content) return alert('내용을 입력하세요.');
+      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
+      await createPostDoc({ type:'board', content, authorId:user.id||null, authorName:user.username||'익명', level:levelActive, region:null });
+      setCooldown('post_cd', POST_CD_MS);
+      postContent.value='';
+    });
 
-  backBtn.addEventListener('click', ()=>{
-    history.back();
-  });
+    /* ===== posting (region) ===== */
+    regionSubmit.addEventListener('click', async ()=>{
+      const user = loadUser();
+      if(!user) return alert('글 작성은 로그인 후 가능합니다.');
+      if(getRemainingMs('post_cd')>0) return alert('게시글 쿨타임이 적용중입니다.');
+      const content = regionPostContent.value.trim();
+      if(!content) return alert('내용을 입력하세요.');
+      await createPostDoc({ type:'board', content, authorId:user.id||null, authorName:user.username||'익명', level:null, region:activeRegion });
+      setCooldown('post_cd', POST_CD_MS);
+      regionPostContent.value='';
+    });
 
-  window.addEventListener('popstate', (event)=>{
-    if(event.state && event.state.region){
-      activeRegion = event.state.region;
+    /* ===== cooldown UI updater ===== */
+    setInterval(()=> {
+      const rem = getRemainingMs('post_cd');
+      postCooldownEl.textContent = rem>0 ? `게시글 쿨타임: ${ (rem/60000).toFixed(1) }분 남음` : '';
+    }, 1000);
+
+    /* ===== region selection + history ===== */
+    let activeRegion = null;
+    worldEls.forEach(w => w.addEventListener('click', ()=>{
+      activeRegion = w.dataset.id;
+      document.getElementById('regionTitle').textContent = w.querySelector('.label').textContent + ' 모집';
       mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-      renderRegionPosts(); renderRegionChats();
-    } else {
-      // go main
+      renderRegionPosts();
+      history.pushState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
+    }));
+
+    backBtn.addEventListener('click', ()=> {
+      history.back();
+    });
+
+    window.addEventListener('popstate', (e)=>{
+      if(e.state && e.state.region){
+        activeRegion = e.state.region;
+        mainView.classList.add('hidden'); regionView.classList.remove('hidden');
+        renderRegionPosts();
+      } else {
+        activeRegion = null;
+        mainView.classList.remove('hidden'); regionView.classList.add('hidden');
+        renderPosts();
+      }
+    });
+
+    // logo click -> go main
+    logoBtn.addEventListener('click', ()=> {
       activeRegion = null;
       mainView.classList.remove('hidden'); regionView.classList.add('hidden');
-      renderPosts(); renderChats();
-    }
-  });
+      history.pushState({}, '', REDIRECT_URI);
+      renderPosts();
+    });
 
-  // on load: if url has hash, open region
-  window.addEventListener('load', ()=>{
-    const hash = decodeURIComponent(location.hash.replace('#','')) || '';
-    if(hash && REGIONS.includes(hash)){
-      // simulate click
-      activeRegion = hash;
-      document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${hash}"] .label`).textContent + ' 모집';
-      mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-      renderRegionPosts(); renderRegionChats();
-      history.replaceState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
-    }
-    initLevelTabs();
-    handleDiscordLogin();
-  });
-
-  /* ===== Discord login flow (implicit grant) ===== */
-  loginBtn.addEventListener('click', ()=> {
-    const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
-    window.location.href = url;
-  });
-
-  function handleDiscordLogin(){
-    const hash = window.location.hash;
-    if(hash && hash.includes('access_token')){
-      try{
-        const params = new URLSearchParams(hash.replace('#',''));
-        const token = params.get('access_token');
-        // fetch user
-        fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } })
-        .then(r => {
-          if(!r.ok) throw new Error('discord fetch failed');
-          return r.json();
-        })
-        .then(user => {
-          const u = { id: user.id, username: user.username + (user.discriminator?('#'+user.discriminator):'') , avatar: user.avatar?`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`:'' };
-          saveUser(u);
-          loginArea.innerHTML = `👤 ${u.username}`;
-          // remove hash and reset URL to redirect URI
-          history.replaceState(null,'',REDIRECT_URI);
-        })
-        .catch(err => {
-          console.error(err);
-          alert('디스코드 로그인 실패: 설정(redirect URI/implicit) 확인 필요');
-        });
-      }catch(e){
-        console.error(e);
+    // on load: open region if hash exists
+    window.addEventListener('load', ()=>{
+      initLevelTabs();
+      const hash = decodeURIComponent(location.hash.replace('#','')) || '';
+      if(hash && REGIONS.includes(hash)){
+        activeRegion = hash;
+        document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${hash}"] .label`).textContent + ' 모집';
+        mainView.classList.add('hidden'); regionView.classList.remove('hidden');
+        renderRegionPosts();
+        history.replaceState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
       }
-    } else {
-      const u = loadUser();
-      if(u){ loginArea.innerHTML = `👤 ${u.username}`; }
+      // try login session
+      tryHandleDiscordLogin();
+    });
+
+    /* ===== Discord login flow (implicit) ===== */
+    loginBtn.addEventListener('click', ()=> {
+      const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
+      window.location.href = url;
+    });
+
+    async function tryHandleDiscordLogin(){
+      const hash = window.location.hash || '';
+      if(hash.includes('access_token')){
+        try{
+          const params = new URLSearchParams(hash.replace('#',''));
+          const token = params.get('access_token');
+          // fetch user info
+          const res = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
+          if(!res.ok) throw new Error('discord fetch failed');
+          const user = await res.json();
+          // prefer global_name, fallback username
+          const displayName = user.global_name || user.username;
+          const avatarUrl = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png';
+          const u = { id: user.id, username: displayName, avatar: avatarUrl, token };
+          saveUser(u);
+          renderLoginArea(u);
+          // remove token from url
+          history.replaceState(null,'',REDIRECT_URI);
+        }catch(err){
+          console.error(err);
+          alert('디스코드 로그인 실패 — Redirect/Implicit 설정을 확인하세요.');
+          history.replaceState(null,'',REDIRECT_URI);
+        }
+      } else {
+        const u = loadUser();
+        if(u) renderLoginArea(u);
+      }
     }
-  }
+
+    function renderLoginArea(user){
+      loginArea.innerHTML = `
+        <img src="${user.avatar}" alt="avatar" width="28" height="28" style="border-radius:6px;object-fit:cover;vertical-align:middle">
+        <span style="font-weight:700;margin-left:6px">${escapeHtml(user.username)}</span>
+        <button id="logoutBtn" style="background:#2f3136;color:white;border:none;padding:6px 8px;border-radius:8px;cursor:pointer">로그아웃</button>
+      `;
+      document.getElementById('logoutBtn').addEventListener('click', ()=> {
+        localStorage.removeItem(USER_KEY);
+        // also remove access token if stored in url or localStorage (we store only user)
+        location.reload();
+      });
+    }
 
   </script>
 </body>
