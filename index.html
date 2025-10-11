@@ -36,7 +36,6 @@
     .world .label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;text-shadow:0 2px 6px rgba(0,0,0,0.5)}
     .container{max-width:1100px;margin:20px auto;padding:0 18px}
     .card{background:var(--card-bg);padding:18px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04)}
-    .main-grid{display:block;gap:18px}
     .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
     .tab{padding:8px 12px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-weight:700;border:1px solid rgba(0,0,0,0.04)}
     .tab.active{background:linear-gradient(90deg,var(--accent),#3e86ff);color:white}
@@ -45,10 +44,40 @@
     .actions{display:flex;gap:8px;align-items:center;margin-top:10px}
     button.primary{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
     .small{font-size:13px;color:var(--muted)}
-    .post{margin-bottom:12px;padding:12px;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,0.03)}
+    
+    /* ===== 게시글 가독성 및 밀도 개선 스타일 (Post Readability & Density Improvements) ===== */
+    .post{
+      margin-bottom:12px; /* 게시글 사이 세로 간격 조정 (밀도 증가) */
+      padding:12px; /* 게시글 내부 여백 조정 (밀도 증가) */
+      border-radius:10px; 
+      background:#fff;
+      border:1px solid rgba(0,0,0,0.2); /* 테두리 선명도 강화 */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02); /* 그림자 약화 */
+      transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+    }
+    .post:hover {
+      transform: translateY(-2px); 
+      box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+    }
+    /* ================================================================= */
+
     .post .meta{margin-top:8px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:center}
-    /* .author 클래스 대신 author-link 내부의 인라인 스타일로 처리 */
-    /* a.author{color:var(--accent);text-decoration:none;font-weight:700} */
+    .hidden{display:none !important;}
+    
+    /* 삭제 버튼 스타일 */
+    .delete-btn {
+        color: var(--muted); 
+        background: none; 
+        border: none; 
+        cursor: pointer; 
+        font-size: 14px; 
+        padding: 0;
+        transition: color 0.1s;
+    }
+    .delete-btn:hover {
+        color: #d90000;
+    }
+
     @media(max-width:980px){ .world{flex:0 0 130px} .container{padding:0 12px} }
   </style>
 </head>
@@ -64,50 +93,56 @@
     <div class="world" data-id="victoria" style="background-image:url('./images/victoria.png')"><div class="label">빅토리아</div></div>
     <div class="world" data-id="elnath" style="background-image:url('./images/elnath.png')"><div class="label">엘나스</div></div>
     <div class="world" data-id="luduslake" style="background-image:url('./images/luduslake.png')"><div class="label">루더스 호수</div></div>
-    <div class="world" data-id="minar" style="background-image:url('./images/minar.png')"><div class="label">미나르 숲</div></div>
+    <div class="world" data-id="minar" style="background-image:url('./images/minar.png')"><div class="label">미나르  숲</div></div>
     <div class="world" data-id="aqua" style="background-image:url('./images/aqua.png')"><div class="label">아쿠아 로드</div></div>
     <div class="world" data-id="nihal" style="background-image:url('./images/nihal.png')"><div class="label">니할 사막</div></div>
   </div>
 
   <div class="container">
-    <div id="mainView" class="card main-grid">
-      <div style="display:flex;justify-content:space-between;align-items:center">
+    <!-- 레벨 탭 (메인 화면에서 항상 표시) -->
+    <div id="levelTabsContainer" style="max-width: 550px; margin: 0 auto 20px;"> 
+        <div class="small" style="margin-bottom: 8px; text-align: center; color: var(--text); font-weight: 600;">레벨대별 파티 모집</div>
+        <div id="levelTabs" class="tabs" style="justify-content: center;"></div>
+    </div>
+    
+    <!-- LEVEL POST VIEW (레벨 탭 클릭 시 표시되는 모집 페이지) -->
+    <div id="levelView" class="hidden card"> 
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div>
-          <div style="font-weight:800;font-size:18px">메인 - 전체 모집</div>
-          <div class="small">레벨대별 탭은 메인에서만 표시됩니다</div>
+          <div id="levelTitle" style="font-weight:800;font-size:18px">10~30 레벨 모집</div>
+          <div class="small">선택한 레벨대의 모집글만 표시됩니다</div>
         </div>
-        <div class="small">게시글 쿨타임: 3분</div>
+        <div style="display:flex;justify-content:flex-end;align-items:center; gap: 12px;">
+            <div id="levelPostCooldownInfo" class="small">게시글 쿨타임: 3분</div>
+            <button id="levelBackBtn" class="tab">메인으로 돌아가기</button>
+        </div>
       </div>
 
-      <div id="levelTabs" class="tabs"></div>
-
-      <div id="writeArea" style="margin-top:12px">
-        <!-- 모집글 8줄 허용으로 변경 -->
-        <textarea id="postContent" placeholder="모집 내용을 입력하세요. (최대 8줄 허용)"></textarea>
+      <div id="levelWrite" style="margin-top:8px">
+        <textarea id="levelPostContent" rows="4" placeholder="모집 내용을 입력하세요. (최대 8줄 허용)"></textarea>
         <div class="actions">
-          <button id="submitPost" class="primary">모집 등록</button>
-          <div id="postCooldown" class="small" style="margin-left:auto"></div>
+          <button id="levelSubmitPost" class="primary">모집 등록</button>
+          <div id="levelPostCooldown" class="small" style="margin-left:auto"></div>
         </div>
       </div>
 
-      <div id="postsList" style="margin-top:16px"></div>
+      <div id="levelPostsList" style="margin-top:16px"></div>
     </div>
 
-    <!-- region view -->
+    <!-- region view (지역 모집) -->
     <div id="regionView" class="hidden card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div>
           <div id="regionTitle" style="font-weight:800;font-size:18px">지역 모집</div>
           <div class="small">선택한 대륙의 모집글만 표시됩니다</div>
         </div>
-        <div>
-          <button id="backBtn" class="tab">메인으로 돌아가기</button>
+        <div style="display:flex;justify-content:flex-end;align-items:center; gap: 12px;">
+          <button id="regionBackBtn" class="tab">메인으로 돌아가기</button>
         </div>
       </div>
 
       <div id="regionWrite" style="margin-top:8px">
-        <!-- 모집글 8줄 허용으로 변경 -->
-        <textarea id="regionPostContent" rows="8" placeholder="지역 모집 내용을 입력하세요. (최대 8줄)"></textarea>
+        <textarea id="regionPostContent" rows="4" placeholder="지역 모집 내용을 입력하세요. (최대 8줄)"></textarea>
         <div class="actions">
           <button id="regionSubmit" class="primary">모집 등록</button>
           <div id="regionPostCooldown" class="small" style="margin-left:auto"></div>
@@ -121,12 +156,12 @@
   <!-- Firebase modular SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
     // ========== firebaseConfig (이미 제공하신 값) ==========
     const firebaseConfig = {
       apiKey: "AIzaSyB059CBnkyxlsJZbMfbBK5AJ_s4XKbYGcI",
-      authDomain: "maple-party-zone.firebaseapp.com".replace("maple-party-zone","maple-partyzone"), // safe fallback in case import mismatch
+      authDomain: "maple-party-zone.firebaseapp.com".replace("maple-party-zone","maple-partyzone"), 
       projectId: "maple-partyzone",
       storageBucket: "maple-partyzone.firebasestorage.app",
       messagingSenderId: "853981783847",
@@ -144,33 +179,45 @@
     const OAUTH_SCOPE = "identify";
     const LEVEL_TABS = ['10~30','30~50','50~80','80~100','100~130','130 이상'];
     const REGIONS = ['victoria','elnath','luduslake','minar','aqua','nihal'];
-    
-    // 모집글 최대 라인 수를 8로 변경
     const MAX_POST_LINES = 8;
+    
+    // !!! 관리자 ID 설정: 이 ID와 로그인한 유저 ID가 일치하면 모든 글을 삭제할 수 있습니다. !!!
+    // TODO: 운영자님의 실제 디스코드 사용자 ID로 변경해주세요.
+    const ADMIN_USER_ID = "YOUR_ADMIN_DISCORD_ID"; 
+
 
     /* ===== UI refs ===== */
     const worldEls = document.querySelectorAll('.world');
+    const levelTabsContainer = document.getElementById('levelTabsContainer');
     const levelTabsEl = document.getElementById('levelTabs');
-    const postsList = document.getElementById('postsList');
-    const postContent = document.getElementById('postContent');
-    const postSearch = null;
-    const clearSearch = null;
-    const submitPost = document.getElementById('submitPost');
-    const postCooldownEl = document.getElementById('postCooldown');
 
-    const mainView = document.getElementById('mainView');
+    // Level View Refs (New or Renamed)
+    const levelView = document.getElementById('levelView');
+    const levelTitle = document.getElementById('levelTitle');
+    const levelPostContent = document.getElementById('levelPostContent');
+    const levelSubmitPost = document.getElementById('levelSubmitPost');
+    const levelPostCooldown = document.getElementById('levelPostCooldown');
+    const levelPostCooldownInfo = document.getElementById('levelPostCooldownInfo');
+    const levelPostsList = document.getElementById('levelPostsList');
+    const levelBackBtn = document.getElementById('levelBackBtn');
+
+    // Region View Refs
     const regionView = document.getElementById('regionView');
     const regionTitle = document.getElementById('regionTitle');
-    const backBtn = document.getElementById('backBtn');
-
     const regionPostContent = document.getElementById('regionPostContent');
     const regionSubmit = document.getElementById('regionSubmit');
     const regionPosts = document.getElementById('regionPosts');
     const regionPostCooldown = document.getElementById('regionPostCooldown');
+    const regionBackBtn = document.getElementById('regionBackBtn');
+
 
     const loginBtn = document.getElementById('loginBtn');
     const loginArea = document.getElementById('loginArea');
     const logoBtn = document.getElementById('logoBtn');
+
+    /* ===== State ===== */
+    let activeRegion = null;
+    let activeLevel = LEVEL_TABS[0]; // Set default active level for history
 
     /* ===== cooldowns (ms) ===== */
     const POST_CD_MS = 3 * 60 * 1000;
@@ -189,17 +236,15 @@
     function saveUser(u){ localStorage.setItem(USER_KEY, JSON.stringify(u)); }
     function loadUser(){ try{ return JSON.parse(localStorage.getItem(USER_KEY)||'null'); }catch(e){return null} }
 
-    /* Discord 프로필 링크를 포함한 작성자 HTML 생성 함수 (디스코드 메세지 컨택) */
+    /* Discord 프로필 링크를 포함한 작성자 HTML 생성 함수 */
     function createAuthorLinkHtml(post) {
       const defaultAvatar = 'https://cdn.discordapp.com/embed/avatars/0.png';
       const avatar = post.authorAvatar || defaultAvatar;
       const name = escapeHtml(post.authorName || '익명');
       
       if (post.authorId) {
-        // Discord 사용자 ID를 사용하여 프로필 링크 생성 (클릭 시 메세지 발송을 위한 가장 가까운 방법)
         const profileUrl = `https://discord.com/users/${post.authorId}`;
 
-        // 이미지와 닉네임 전체를 감싸서 클릭 가능하게 만듭니다. (인라인 스타일 사용)
         return `
           <a href="${profileUrl}" target="_blank" rel="noopener noreferrer" 
             style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--text); cursor:pointer;"
@@ -210,27 +255,57 @@
           </a>
         `;
       } else {
-        // 비로그인 사용자 게시물 처리
         return `<span class="small">${name}</span>`;
       }
     }
 
 
-    /* ===== level tabs ===== */
+    /* ===== level tabs (Navigation) ===== */
     function initLevelTabs(){
       levelTabsEl.innerHTML = '';
-      LEVEL_TABS.forEach((l,i)=>{
+      LEVEL_TABS.forEach((l)=>{
         const b = document.createElement('button');
-        b.className = 'tab' + (i===0? ' active':'');
+        b.className = 'tab'; // No active class initially, it's a navigation button now
         b.textContent = l;
         b.addEventListener('click', ()=> {
-          document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active'));
-          b.classList.add('active');
-          renderPosts();
+          showLevelView(l); // Navigate to new view
+          history.pushState({ view: 'level', level: l }, '', '#level-'+encodeURIComponent(l));
         });
         levelTabsEl.appendChild(b);
       });
     }
+
+    /* ===== Post Deletion Logic ===== */
+    async function deletePost(postId) {
+        const user = loadUser();
+        if (!user) return console.error('로그인이 필요합니다.');
+
+        const postToDelete = cachedPosts.find(p => p.id === postId);
+        if (!postToDelete) return console.error('게시글을 찾을 수 없습니다.');
+        
+        const isAuthor = postToDelete.authorId === user.id;
+        const isAdmin = user.id === ADMIN_USER_ID;
+
+        if (isAuthor || isAdmin) {
+            // 사용자에게 삭제 의도를 확인하는 간략한 로직 (alert/confirm 대체)
+            if(confirm('정말로 이 모집글을 삭제하시겠습니까? (삭제된 글은 복구되지 않습니다)')) {
+                const postRef = doc(db, POSTS_COLL, postId);
+                try {
+                    await deleteDoc(postRef);
+                    console.log(`Post ${postId} deleted by ${user.username}`);
+                } catch (e) {
+                    console.error('삭제 중 오류 발생', e);
+                }
+            } else {
+                 console.log('삭제 취소됨.');
+            }
+        } else {
+            console.error('삭제 권한이 없습니다. (본인 글 또는 관리자만 삭제 가능)');
+        }
+    }
+    
+    // 주의: Canvas 환경에서는 confirm/alert 사용이 권장되지 않으나, 대체 UI 구현을 피하기 위해 임시로 사용합니다.
+
 
     /* ===== Firestore listeners ===== */
     const postsRef = collection(db, POSTS_COLL);
@@ -239,56 +314,69 @@
     let cachedPosts = [];
     onSnapshot(qAll, snapshot => {
       cachedPosts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      // render depending on view
-      if(mainView.classList.contains('hidden')){
+      
+      // Render based on active view
+      if(!levelView.classList.contains('hidden')){ 
+        renderLevelPosts();
+      } else if (!regionView.classList.contains('hidden')){ 
         renderRegionPosts();
-      } else {
-        renderPosts();
       }
     }, err => {
       console.error('Firestore snapshot error', err);
     });
 
-    /* ===== render functions ===== */
-    // 모집글 최대 라인 수를 MAX_POST_LINES (8)로 변경
+    /* ===== render helpers ===== */
     function limitLinesToHtml(text, maxLines=MAX_POST_LINES){
       const lines = escapeHtml(text).split(/\r?\n/).map(s=>s.trim()).slice(0,maxLines);
       return lines.join('<br>');
     }
 
-    function renderPosts(){
-      postsList.innerHTML = '';
-      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
-      const filtered = cachedPosts.filter(p => p.type === 'board' && !p.region && p.level === levelActive);
-      if(filtered.length===0){
-        postsList.innerHTML = '<div class="small">해당 레벨대에 등록된 모집글이 없습니다.</div>';
-        return;
-      }
-      filtered.forEach(p => {
+    function createPostElement(p, listEl) {
         const created = p.createdAtISO ? new Date(p.createdAtISO) : (p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : new Date());
-        // Discord 링크 생성 함수 사용
         const authorLinkHtml = createAuthorLinkHtml(p);
         const contentHtml = limitLinesToHtml(p.content);
+        
+        // 삭제 버튼 생성 로직
+        const currentUser = loadUser();
+        const isAuthor = currentUser && p.authorId === currentUser.id;
+        const isAdmin = currentUser && currentUser.id === ADMIN_USER_ID;
+        let deleteBtnHtml = '';
+        if (isAuthor || isAdmin) {
+            deleteBtnHtml = `<button class="delete-btn" data-post-id="${p.id}" title="모집글 삭제">🗑️</button>`;
+        }
+        
         const div = document.createElement('div'); div.className='post';
-        div.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorLinkHtml}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
-        postsList.appendChild(div);
-      });
+        div.innerHTML = `<div style="font-weight:700">${contentHtml}</div>
+                         <div class="meta">
+                           <div style="display:flex; align-items:center; gap: 8px;">${authorLinkHtml}</div>
+                           <div style="display:flex; align-items:center; gap: 8px;">${deleteBtnHtml}${created.toLocaleString('ko-KR')}</div>
+                         </div>`;
+        listEl.appendChild(div);
+    }
+    
+    /* ===== render functions ===== */
+    function renderLevelPosts(){
+      levelPostsList.innerHTML = '';
+      if(!activeLevel) return; // Should not happen if levelView is visible
+      
+      const filtered = cachedPosts.filter(p => p.type === 'board' && !p.region && p.level === activeLevel);
+      
+      if(filtered.length===0){
+        levelPostsList.innerHTML = '<div class="small">해당 레벨대에 등록된 모집글이 없습니다.</div>';
+        return;
+      }
+      
+      filtered.forEach(p => createPostElement(p, levelPostsList));
     }
 
     function renderRegionPosts(){
       regionPosts.innerHTML = '';
       if(!activeRegion) return;
       const filtered = cachedPosts.filter(p => p.type === 'board' && p.region === activeRegion);
+      
       if(filtered.length===0){ regionPosts.innerHTML = '<div class="small">해당 지역에 등록된 모집글이 없습니다.</div>'; return; }
-      filtered.forEach(p=>{
-        const created = p.createdAtISO ? new Date(p.createdAtISO) : (p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : new Date());
-        // Discord 링크 생성 함수 사용
-        const authorLinkHtml = createAuthorLinkHtml(p);
-        const contentHtml = limitLinesToHtml(p.content);
-        const d = document.createElement('div'); d.className='post';
-        d.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorLinkHtml}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
-        regionPosts.appendChild(d);
-      });
+      
+      filtered.forEach(p => createPostElement(p, regionPosts));
     }
 
     /* ===== create doc helper (store createdAtISO + serverTimestamp) ===== */
@@ -297,36 +385,48 @@
         await addDoc(postsRef, { ...obj, createdAtISO: new Date().toISOString(), createdAtTS: serverTimestamp() });
       }catch(e){
         console.error('addDoc error', e);
-        // alert('서버에 저장하지 못했습니다.'); // alert 제거 대신 console.error만 사용
       }
     }
 
-    /* ===== posting (main) ===== */
-    submitPost.addEventListener('click', async ()=>{
+    /* ===== posting (level view) ===== */
+    levelSubmitPost.addEventListener('click', async ()=>{
       const user = loadUser();
-      if(!user) return console.error('글 작성은 로그인 후 가능합니다.'); // alert 대신 console.error
-      if(getRemainingMs('post_cd')>0) return console.error('게시글 쿨타임이 적용중입니다.'); // alert 대신 console.error
-      const content = postContent.value.trim();
-      if(!content) return console.error('내용을 입력하세요.'); // alert 대신 console.error
-      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
+      if(!user) return console.error('글 작성은 로그인 후 가능합니다.'); 
+      if(getRemainingMs('post_cd')>0) return console.error('게시글 쿨타임이 적용중입니다.'); 
+      const content = levelPostContent.value.trim();
+      if(!content) return console.error('내용을 입력하세요.'); 
       
-      // 작성자 아바타 정보 추가
-      await createPostDoc({ type:'board', content, authorId:user.id||null, authorName:user.username||'익명', authorAvatar:user.avatar||null, level:levelActive, region:null });
+      await createPostDoc({ 
+          type:'board', 
+          content, 
+          authorId:user.id||null, 
+          authorName:user.username||'익명', 
+          authorAvatar:user.avatar||null, 
+          level:activeLevel, 
+          region:null 
+      });
       
       setCooldown('post_cd', POST_CD_MS);
-      postContent.value='';
+      levelPostContent.value='';
     });
 
-    /* ===== posting (region) ===== */
+    /* ===== posting (region view) ===== */
     regionSubmit.addEventListener('click', async ()=>{
       const user = loadUser();
-      if(!user) return console.error('글 작성은 로그인 후 가능합니다.'); // alert 대신 console.error
-      if(getRemainingMs('post_cd')>0) return console.error('게시글 쿨타임이 적용중입니다.'); // alert 대신 console.error
+      if(!user) return console.error('글 작성은 로그인 후 가능합니다.'); 
+      if(getRemainingMs('post_cd')>0) return console.error('게시글 쿨타임이 적용중입니다.'); 
       const content = regionPostContent.value.trim();
-      if(!content) return console.error('내용을 입력하세요.'); // alert 대신 console.error
+      if(!content) return console.error('내용을 입력하세요.'); 
       
-      // 작성자 아바타 정보 추가
-      await createPostDoc({ type:'board', content, authorId:user.id||null, authorName:user.username||'익명', authorAvatar:user.avatar||null, level:null, region:activeRegion });
+      await createPostDoc({ 
+          type:'board', 
+          content, 
+          authorId:user.id||null, 
+          authorName:user.username||'익명', 
+          authorAvatar:user.avatar||null, 
+          level:null, 
+          region:activeRegion 
+      });
       
       setCooldown('post_cd', POST_CD_MS);
       regionPostContent.value='';
@@ -335,60 +435,134 @@
     /* ===== cooldown UI updater ===== */
     setInterval(()=> {
       const rem = getRemainingMs('post_cd');
-      postCooldownEl.textContent = rem>0 ? `게시글 쿨타임: ${ (rem/60000).toFixed(1) }분 남음` : '';
-      // 지역 모집 쿨타임도 업데이트 (동일한 키 사용)
-      regionPostCooldown.textContent = rem>0 ? `게시글 쿨타임: ${ (rem/60000).toFixed(1) }분 남음` : '';
+      const text = rem>0 ? `게시글 쿨타임: ${ (rem/60000).toFixed(1) }분 남음` : '게시글 쿨타임: 3분';
+      levelPostCooldown.textContent = rem > 0 ? text : '';
+      levelPostCooldownInfo.textContent = text;
+      regionPostCooldown.textContent = rem > 0 ? text : '';
     }, 1000);
 
-    /* ===== region selection + history ===== */
-    let activeRegion = null;
+    /* ===== View State Functions ===== */
+    function showHomeView() {
+        activeLevel = null;
+        activeRegion = null;
+        levelView.classList.add('hidden');
+        regionView.classList.add('hidden');
+        // Clear active class from level tabs
+        document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active'));
+    }
+
+    function showLevelView(level) {
+        if (!level || !LEVEL_TABS.includes(level)) level = LEVEL_TABS[0];
+        activeLevel = level;
+        activeRegion = null;
+
+        // UI updates
+        levelTitle.textContent = activeLevel + ' 레벨 모집';
+        levelView.classList.remove('hidden');
+        regionView.classList.add('hidden');
+        
+        // Update active tab style (optional, but good UX)
+        document.querySelectorAll('#levelTabs .tab').forEach(x => {
+            x.classList.toggle('active', x.textContent === activeLevel);
+        });
+
+        renderLevelPosts();
+    }
+
+    function showRegionView(region) {
+        if (!region || !REGIONS.includes(region)) region = REGIONS[0];
+        activeRegion = region;
+        activeLevel = null;
+
+        // UI updates
+        document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${activeRegion}"] .label`).textContent + ' 모집';
+        levelView.classList.add('hidden');
+        regionView.classList.remove('hidden');
+
+        // Clear active class from level tabs
+        document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active'));
+
+        renderRegionPosts();
+    }
+
+
+    /* ===== Navigation and History Handling ===== */
     worldEls.forEach(w => w.addEventListener('click', ()=>{
-      activeRegion = w.dataset.id;
-      document.getElementById('regionTitle').textContent = w.querySelector('.label').textContent + ' 모집';
-      mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-      renderRegionPosts();
-      history.pushState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
+      const regionId = w.dataset.id;
+      showRegionView(regionId);
+      history.pushState({ view: 'region', region: regionId }, '', '#region-'+encodeURIComponent(regionId));
     }));
 
-    backBtn.addEventListener('click', ()=> {
+    levelBackBtn.addEventListener('click', ()=> {
+      history.back();
+    });
+
+    regionBackBtn.addEventListener('click', ()=> {
       history.back();
     });
 
     window.addEventListener('popstate', (e)=>{
-      if(e.state && e.state.region){
-        activeRegion = e.state.region;
-        document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${activeRegion}"] .label`).textContent + ' 모집';
-        mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-        renderRegionPosts();
+      const state = e.state || {};
+      
+      if(state.view === 'level' && state.level){
+        showLevelView(state.level);
+      } else if (state.view === 'region' && state.region){
+        showRegionView(state.region);
       } else {
-        activeRegion = null;
-        mainView.classList.remove('hidden'); regionView.classList.add('hidden');
-        renderPosts();
+        // Fallback to home view if no state or unknown state
+        showHomeView();
       }
     });
 
     // logo click -> go main
     logoBtn.addEventListener('click', ()=> {
-      activeRegion = null;
-      mainView.classList.remove('hidden'); regionView.classList.add('hidden');
-      history.pushState({}, '', REDIRECT_URI);
-      renderPosts();
+      showHomeView();
+      history.pushState({ view: 'home' }, '', REDIRECT_URI);
     });
 
-    // on load: open region if hash exists
+    // on load: check initial view
     window.addEventListener('load', ()=>{
       initLevelTabs();
+      
       const hash = decodeURIComponent(location.hash.replace('#','')) || '';
-      if(hash && REGIONS.includes(hash)){
-        activeRegion = hash;
-        document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${hash}"] .label`).textContent + ' 모집';
-        mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-        renderRegionPosts();
-        history.replaceState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
+      if(hash.startsWith('region-')){
+        const regionId = hash.substring(7);
+        if(REGIONS.includes(regionId)){
+          showRegionView(regionId);
+          history.replaceState({ view: 'region', region: regionId }, '', location.hash);
+        } else {
+          showHomeView();
+        }
+      } else if (hash.startsWith('level-')){
+        const levelRange = hash.substring(6);
+        if(LEVEL_TABS.includes(levelRange)){
+          showLevelView(levelRange);
+          history.replaceState({ view: 'level', level: levelRange }, '', location.hash);
+        } else {
+          showHomeView();
+        }
+      } else {
+        showHomeView();
       }
-      // try login session
+      
       tryHandleDiscordLogin();
     });
+    
+    // 게시글 삭제 이벤트 리스너 (이벤트 위임 사용)
+    levelPostsList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-btn')) {
+            const postId = e.target.dataset.postId;
+            if (postId) deletePost(postId);
+        }
+    });
+
+    regionPosts.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-btn')) {
+            const postId = e.target.dataset.postId;
+            if (postId) deletePost(postId);
+        }
+    });
+
 
     /* ===== Discord login flow (implicit) ===== */
     loginBtn.addEventListener('click', ()=> {
@@ -417,7 +591,6 @@
           history.replaceState(null,'',REDIRECT_URI);
         }catch(err){
           console.error(err);
-          // alert('디스코드 로그인 실패 — Redirect/Implicit 설정을 확인하세요.'); // alert 제거
           history.replaceState(null,'',REDIRECT_URI);
         }
       } else {
@@ -434,7 +607,6 @@
       `;
       document.getElementById('logoutBtn').addEventListener('click', ()=> {
         localStorage.removeItem(USER_KEY);
-        // also remove access token if stored in url or localStorage (we store only user)
         location.reload();
       });
     }
@@ -442,4 +614,5 @@
   </script>
 </body>
 </html>
+
 
