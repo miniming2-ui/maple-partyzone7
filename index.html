@@ -1,501 +1,445 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>메랜파티존 | Maple Party Zone</title>
-  <meta name="description" content="메이플랜드 파티모집 - 메랜파티존" />
-  <meta name="robots" content="index,follow" />
-  <style>
-    :root{
-      --page-bg:#d5d5d5; /* 요청한 톤 */
-      --card-bg:#ffffff;
-      --muted:#6b6b6b;
-      --accent:#5865F2;
-      --text:#111;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter, 'Noto Sans KR', system-ui, sans-serif;
-      background:var(--page-bg);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-    }
-    header{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:12px 20px;background:transparent;border-bottom:1px solid rgba(0,0,0,0.06);
-    }
-    .logo{
-      font-weight:800;color:var(--text);font-size:1.2rem;cursor:pointer;
-    }
-    #loginArea{display:flex;align-items:center;gap:8px}
-    #loginArea button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:white;cursor:pointer}
-    .worlds{display:flex;gap:12px;overflow:auto;padding:12px 20px}
-    .world{flex:0 0 160px;height:90px;border-radius:8px;background-size:cover;background-position:center;position:relative;cursor:pointer;border:1px solid rgba(0,0,0,0.06)}
-    .world .label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;text-shadow:0 2px 6px rgba(0,0,0,0.5)}
-    .container{max-width:1100px;margin:20px auto;padding:0 18px}
-    .card{background:var(--card-bg);padding:18px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04)}
-    .main-grid{display:block;gap:18px}
-    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    .tab{padding:8px 12px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-weight:700;border:1px solid rgba(0,0,0,0.04)}
-    .tab.active{background:linear-gradient(90deg,var(--accent),#3e86ff);color:white}
-    input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:#f6f6f6;color:var(--text);font-size:14px;line-height:1.4}
-    
-    /* ✅ 수정된 부분: textarea의 최소 높이를 8줄에 맞게 조정 */
-    textarea{min-height:160px;resize:vertical}
-    /* --- */
-
-    .actions{display:flex;gap:8px;align-items:center;margin-top:10px}
-    button.primary{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
-    .small{font-size:13px;color:var(--muted)}
-    .post{margin-bottom:12px;padding:12px;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,0.03)}
-    .post .meta{margin-top:8px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:center}
-    
-    /* ✅ 추가/수정된 부분: 작성자 정보 표시 스타일 */
-    .post .author-info{
-        display:flex;
-        align-items:center;
-        gap:8px;
-        color:var(--accent);
-        text-decoration:none;
-        font-weight:700;
-        cursor:pointer;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>메랜파티존 | Maple Party Zone</title>
+  <meta name="description" content="메이플랜드 파티모집 - 메랜파티존" />
+  <meta name="robots" content="index,follow" />
+  <style>
+    :root{
+      --page-bg:#d5d5d5; /* 요청한 톤 */
+      --card-bg:#ffffff;
+      --muted:#6b6b6b;
+      --accent:#5865F2;
+      --text:#111;
     }
-    .post .author-info img{
-        border-radius:50%;
-        object-fit:cover;
-        width:24px;
-        height:24px;
-        background-color:#eee;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, 'Noto Sans KR', system-ui, sans-serif;
+      background:var(--page-bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
     }
-    /* --- */
-    
-    .hidden{display:none !important}
-    @media(max-width:980px){ .world{flex:0 0 130px} .container{padding:0 12px} }
-  </style>
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 20px;background:transparent;border-bottom:1px solid rgba(0,0,0,0.06);
+    }
+    .logo{
+      font-weight:800;color:var(--text);font-size:1.2rem;cursor:pointer;
+    }
+    #loginArea{display:flex;align-items:center;gap:8px}
+    #loginArea button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:white;cursor:pointer}
+    .worlds{display:flex;gap:12px;overflow:auto;padding:12px 20px}
+    .world{flex:0 0 160px;height:90px;border-radius:8px;background-size:cover;background-position:center;position:relative;cursor:pointer;border:1px solid rgba(0,0,0,0.06)}
+    .world .label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;text-shadow:0 2px 6px rgba(0,0,0,0.5)}
+    .container{max-width:1100px;margin:20px auto;padding:0 18px}
+    .card{background:var(--card-bg);padding:18px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04)}
+    .main-grid{display:block;gap:18px}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .tab{padding:8px 12px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-weight:700;border:1px solid rgba(0,0,0,0.04)}
+    .tab.active{background:linear-gradient(90deg,var(--accent),#3e86ff);color:white}
+    input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:#f6f6f6;color:var(--text);font-size:14px;line-height:1.4}
+    textarea{min-height:100px;resize:vertical}
+    .actions{display:flex;gap:8px;align-items:center;margin-top:10px}
+    button.primary{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    .post{margin-bottom:12px;padding:12px;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,0.03)}
+    .post .meta{margin-top:8px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:center}
+    /* .author 클래스 대신 author-link 내부의 인라인 스타일로 처리 */
+    /* a.author{color:var(--accent);text-decoration:none;font-weight:700} */
+    @media(max-width:980px){ .world{flex:0 0 130px} .container{padding:0 12px} }
+  </style>
 </head>
 <body>
-  <header>
-    <div class="logo" id="logoBtn">🍁 메랜파티존</div>
-    <div id="loginArea">
-      <button id="loginBtn">디스코드 로그인</button>
-    </div>
-  </header>
+  <header>
+    <div class="logo" id="logoBtn">🍁 메랜파티존</div>
+    <div id="loginArea">
+      <button id="loginBtn">디스코드 로그인</button>
+    </div>
+  </header>
 
-  <div class="worlds" id="worldBar">
-    <!-- ⚠️ 주의: 이미지 경로는 실제 환경에 맞게 수정 필요 -->
-    <div class="world" data-id="victoria" style="background-image:url('https://placehold.co/160x90/3498db/ffffff?text=Victoria')"><div class="label">빅토리아</div></div>
-    <div class="world" data-id="elnath" style="background-image:url('https://placehold.co/160x90/2ecc71/ffffff?text=Elnath')"><div class="label">엘나스</div></div>
-    <div class="world" data-id="luduslake" style="background-image:url('https://placehold.co/160x90/9b59b6/ffffff?text=Ludus')"><div class="label">루더스 호수</div></div>
-    <div class="world" data-id="minar" style="background-image:url('https://placehold.co/160x90/e67e22/ffffff?text=Minar')"><div class="label">미나르 숲</div></div>
-    <div class="world" data-id="aqua" style="background-image:url('https://placehold.co/160x90/1abc9c/ffffff?text=Aqua')"><div class="label">아쿠아 로드</div></div>
-    <div class="world" data-id="nihal" style="background-image:url('https://placehold.co/160x90/f1c40f/000000?text=Nihal')"><div class="label">니할 사막</div></div>
-  </div>
+  <div class="worlds" id="worldBar">
+    <div class="world" data-id="victoria" style="background-image:url('./images/victoria.png')"><div class="label">빅토리아</div></div>
+    <div class="world" data-id="elnath" style="background-image:url('./images/elnath.png')"><div class="label">엘나스</div></div>
+    <div class="world" data-id="luduslake" style="background-image:url('./images/luduslake.png')"><div class="label">루더스 호수</div></div>
+    <div class="world" data-id="minar" style="background-image:url('./images/minar.png')"><div class="label">미나르 숲</div></div>
+    <div class="world" data-id="aqua" style="background-image:url('./images/aqua.png')"><div class="label">아쿠아 로드</div></div>
+    <div class="world" data-id="nihal" style="background-image:url('./images/nihal.png')"><div class="label">니할 사막</div></div>
+  </div>
 
-  <div class="container">
-    <!-- 기본 화면: 메인 모집 -->
-    <div id="mainView" class="card main-grid">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-weight:800;font-size:18px">메인 - 전체 모집</div>
-          <div class="small">레벨대별 탭은 메인에서만 표시됩니다</div>
-        </div>
-        <div class="small">게시글 쿨타임: 3분</div>
-      </div>
+  <div class="container">
+    <div id="mainView" class="card main-grid">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:800;font-size:18px">메인 - 전체 모집</div>
+          <div class="small">레벨대별 탭은 메인에서만 표시됩니다</div>
+        </div>
+        <div class="small">게시글 쿨타임: 3분</div>
+      </div>
 
-      <div id="levelTabs" class="tabs"></div>
+      <div id="levelTabs" class="tabs"></div>
 
-      <div id="writeArea" style="margin-top:12px">
-        <!-- ✅ 플레이스홀더 수정 -->
-        <textarea id="postContent" placeholder="모집 내용을 입력하세요. (최대 8줄 허용)"></textarea>
-        <div class="actions">
-          <button id="submitPost" class="primary">모집 등록</button>
-          <div id="postCooldown" class="small" style="margin-left:auto"></div>
-        </div>
-        <div id="postError" class="small" style="color:red; margin-top:4px;"></div>
-    </div>
+      <div id="writeArea" style="margin-top:12px">
+        <!-- 모집글 8줄 허용으로 변경 -->
+        <textarea id="postContent" placeholder="모집 내용을 입력하세요. (최대 8줄 허용)"></textarea>
+        <div class="actions">
+          <button id="submitPost" class="primary">모집 등록</button>
+          <div id="postCooldown" class="small" style="margin-left:auto"></div>
+        </div>
+      </div>
 
-      <div id="postsList" style="margin-top:16px"></div>
-    </div>
+      <div id="postsList" style="margin-top:16px"></div>
+    </div>
 
-    <!-- 전환 화면: 지역별 모집 (기본적으로 숨겨짐) -->
-    <div id="regionView" class="hidden card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div>
-          <div id="regionTitle" style="font-weight:800;font-size:18px">지역 모집</div>
-          <div class="small">선택한 대륙의 모집글만 표시됩니다</div>
-        </div>
-        <div>
-          <button id="backBtn" class="tab">메인으로 돌아가기</button>
-        </div>
-      </div>
+    <!-- region view -->
+    <div id="regionView" class="hidden card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div id="regionTitle" style="font-weight:800;font-size:18px">지역 모집</div>
+          <div class="small">선택한 대륙의 모집글만 표시됩니다</div>
+        </div>
+        <div>
+          <button id="backBtn" class="tab">메인으로 돌아가기</button>
+        </div>
+      </div>
 
-      <div id="regionWrite" style="margin-top:8px">
-        <!-- ✅ 플레이스홀더 수정 -->
-        <textarea id="regionPostContent" rows="4" placeholder="지역 모집 내용을 입력하세요. (최대 8줄)"></textarea>
-        <div class="actions">
-          <button id="regionSubmit" class="primary">모집 등록</button>
-          <div id="regionPostCooldown" class="small" style="margin-left:auto"></div>
-        </div>
-        <div id="regionPostError" class="small" style="color:red; margin-top:4px;"></div>
-    </div>
+      <div id="regionWrite" style="margin-top:8px">
+        <!-- 모집글 8줄 허용으로 변경 -->
+        <textarea id="regionPostContent" rows="8" placeholder="지역 모집 내용을 입력하세요. (최대 8줄)"></textarea>
+        <div class="actions">
+          <button id="regionSubmit" class="primary">모집 등록</button>
+          <div id="regionPostCooldown" class="small" style="margin-left:auto"></div>
+        </div>
+      </div>
 
-      <div id="regionPosts" style="margin-top:12px"></div>
-    </div>
-  </div>
+      <div id="regionPosts" style="margin-top:12px"></div>
+    </div>
+  </div>
 
-  <!-- Firebase modular SDK -->
-  <script type="module">
-    // 기존 Firebase SDK 모듈 사용
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  <!-- Firebase modular SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    // ========== firebaseConfig (제공하신 값) ==========
-    const firebaseConfig = {
-      apiKey: "AIzaSyB059CBnkyxlsJZbMfbBK5AJ_s4XKbYGcI",
-      authDomain: "maple-party-zone.firebaseapp.com".replace("maple-party-zone","maple-partyzone"), // safe fallback in case import mismatch
-      projectId: "maple-partyzone",
-      storageBucket: "maple-partyzone.firebasestorage.app",
-      messagingSenderId: "853981783847",
-      appId: "1:853981783847:web:2305406459583a8f072b02",
-      measurementId: "G-CNGYW8FF27"
-    };
-    // ======================================================
+    // ========== firebaseConfig (이미 제공하신 값) ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyB059CBnkyxlsJZbMfbBK5AJ_s4XKbYGcI",
+      authDomain: "maple-party-zone.firebaseapp.com".replace("maple-party-zone","maple-partyzone"), // safe fallback in case import mismatch
+      projectId: "maple-partyzone",
+      storageBucket: "maple-partyzone.firebasestorage.app",
+      messagingSenderId: "853981783847",
+      appId: "1:853981783847:web:2305406459583a8f072b02",
+      measurementId: "G-CNGYW8FF27"
+    };
+    // ======================================================
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    /* ===== config ===== */
-    const CLIENT_ID = "1424448769113456752";
-    const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/"; 
-    const OAUTH_SCOPE = "identify";
-    const LEVEL_TABS = ['10~30','30~50','50~80','80~100','100~130','130 이상'];
-    const REGIONS = ['victoria','elnath','luduslake','minar','aqua','nihal'];
-    const MAX_POST_LINES = 8; // ✅ 최대 줄 수 8로 정의
+    /* ===== config ===== */
+    const CLIENT_ID = "1424448769113456752";
+    const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
+    const OAUTH_SCOPE = "identify";
+    const LEVEL_TABS = ['10~30','30~50','50~80','80~100','100~130','130 이상'];
+    const REGIONS = ['victoria','elnath','luduslake','minar','aqua','nihal'];
+    
+    // 모집글 최대 라인 수를 8로 변경
+    const MAX_POST_LINES = 8;
 
-    /* ===== UI refs (참조) ===== */
-    const worldEls = document.querySelectorAll('.world');
-    const levelTabsEl = document.getElementById('levelTabs');
-    const postsList = document.getElementById('postsList');
-    const postContent = document.getElementById('postContent');
-    const submitPost = document.getElementById('submitPost');
-    const postCooldownEl = document.getElementById('postCooldown');
-    const postErrorEl = document.getElementById('postError'); // ✅ 에러 메시지 UI
+    /* ===== UI refs ===== */
+    const worldEls = document.querySelectorAll('.world');
+    const levelTabsEl = document.getElementById('levelTabs');
+    const postsList = document.getElementById('postsList');
+    const postContent = document.getElementById('postContent');
+    const postSearch = null;
+    const clearSearch = null;
+    const submitPost = document.getElementById('submitPost');
+    const postCooldownEl = document.getElementById('postCooldown');
 
-    const mainView = document.getElementById('mainView');
-    const regionView = document.getElementById('regionView');
-    const regionTitle = document.getElementById('regionTitle');
-    const backBtn = document.getElementById('backBtn');
+    const mainView = document.getElementById('mainView');
+    const regionView = document.getElementById('regionView');
+    const regionTitle = document.getElementById('regionTitle');
+    const backBtn = document.getElementById('backBtn');
 
-    const regionPostContent = document.getElementById('regionPostContent');
-    const regionSubmit = document.getElementById('regionSubmit');
-    const regionPosts = document.getElementById('regionPosts');
-    const regionPostCooldown = document.getElementById('regionPostCooldown');
-    const regionPostErrorEl = document.getElementById('regionPostError'); // ✅ 에러 메시지 UI
+    const regionPostContent = document.getElementById('regionPostContent');
+    const regionSubmit = document.getElementById('regionSubmit');
+    const regionPosts = document.getElementById('regionPosts');
+    const regionPostCooldown = document.getElementById('regionPostCooldown');
 
-    const loginBtn = document.getElementById('loginBtn');
-    const loginArea = document.getElementById('loginArea');
-    const logoBtn = document.getElementById('logoBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginArea = document.getElementById('loginArea');
+    const logoBtn = document.getElementById('logoBtn');
 
-    /* ===== cooldowns (ms) ===== */
-    const POST_CD_MS = 3 * 60 * 1000;
+    /* ===== cooldowns (ms) ===== */
+    const POST_CD_MS = 3 * 60 * 1000;
 
-    /* ===== storage keys ===== */
-    const USER_KEY = 'mpz_user';
-    const POSTS_COLL = 'posts';
-    const DEFAULT_AVATAR = 'https://cdn.discordapp.com/embed/avatars/0.png';
+    /* ===== storage keys ===== */
+    const USER_KEY = 'mpz_user';
+    const POSTS_COLL = 'posts';
 
-    /* ===== helpers ===== */
-    function now(){ return Date.now(); }
-    function setCooldown(key, ms){ localStorage.setItem(key, String(Date.now()+ms)); }
-    function getRemainingMs(key){ const v = parseInt(localStorage.getItem(key)||'0',10); const rem = v - Date.now(); return rem>0?rem:0; }
-    function formatMinutes(ms){ return Math.max( (ms/60000).toFixed(1), 0 ); }
-    function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-    function showMessage(el, msg){ el.textContent=msg; setTimeout(()=>el.textContent='', 5000); } // 5초 후 메시지 제거
+    /* ===== helpers ===== */
+    function now(){ return Date.now(); }
+    function setCooldown(key, ms){ localStorage.setItem(key, String(Date.now()+ms)); }
+    function getRemainingMs(key){ const v = parseInt(localStorage.getItem(key)||'0',10); const rem = v - Date.now(); return rem>0?rem:0; }
+    function formatMinutes(ms){ return Math.max( (ms/60000).toFixed(1), 0 ); }
+    function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
-    function saveUser(u){ localStorage.setItem(USER_KEY, JSON.stringify(u)); }
-    function loadUser(){ try{ return JSON.parse(localStorage.getItem(USER_KEY)||'null'); }catch(e){return null} }
+    function saveUser(u){ localStorage.setItem(USER_KEY, JSON.stringify(u)); }
+    function loadUser(){ try{ return JSON.parse(localStorage.getItem(USER_KEY)||'null'); }catch(e){return null} }
 
-    /* ===== level tabs (레벨 탭 기능) ===== */
-    function initLevelTabs(){
-      levelTabsEl.innerHTML = '';
-      LEVEL_TABS.forEach((l,i)=>{
-        const b = document.createElement('button');
-        b.className = 'tab' + (i===0? ' active':'');
-        b.textContent = l;
-        b.addEventListener('click', ()=> {
-          document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active'));
-          b.classList.add('active');
-          renderPosts(); // 탭 변경 시 메인 게시글 렌더링
-        });
-        levelTabsEl.appendChild(b);
-      });
-    }
+    /* Discord 프로필 링크를 포함한 작성자 HTML 생성 함수 (디스코드 메세지 컨택) */
+    function createAuthorLinkHtml(post) {
+      const defaultAvatar = 'https://cdn.discordapp.com/embed/avatars/0.png';
+      const avatar = post.authorAvatar || defaultAvatar;
+      const name = escapeHtml(post.authorName || '익명');
+      
+      if (post.authorId) {
+        // Discord 사용자 ID를 사용하여 프로필 링크 생성 (클릭 시 메세지 발송을 위한 가장 가까운 방법)
+        const profileUrl = `https://discord.com/users/${post.authorId}`;
 
-    /* ===== Firestore listeners (실시간 데이터) ===== */
-    const postsRef = collection(db, POSTS_COLL);
-    const qAll = query(postsRef, orderBy('createdAtTS','desc')); 
+        // 이미지와 닉네임 전체를 감싸서 클릭 가능하게 만듭니다. (인라인 스타일 사용)
+        return `
+          <a href="${profileUrl}" target="_blank" rel="noopener noreferrer" 
+            style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--text); cursor:pointer;"
+            title="디스코드에서 이 유저에게 메세지 보내기">
+            <img src="${avatar}" alt="avatar" width="24" height="24" 
+              style="border-radius:50%; object-fit:cover; vertical-align:middle; border: 1px solid rgba(0,0,0,0.1);">
+            <span class="author" style="color:var(--accent); font-weight:700;">${name}</span>
+          </a>
+        `;
+      } else {
+        // 비로그인 사용자 게시물 처리
+        return `<span class="small">${name}</span>`;
+      }
+    }
 
-    let cachedPosts = [];
-    onSnapshot(qAll, snapshot => {
-      cachedPosts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      // 현재 활성화된 뷰에 따라 렌더링 함수 호출
-      if(regionView.classList.contains('hidden')){ // 메인 뷰가 보일 때
-        renderPosts();
-      } else { // 지역 뷰가 보일 때
-        renderRegionPosts();
-      }
-    }, err => {
-      console.error('Firestore snapshot error', err);
-    });
 
-    /* ===== render functions (게시글 표시) ===== */
-    // ✅ 최대 줄 수를 인수로 받도록 수정
-    function limitLinesToHtml(text, maxLines){
-      const lines = escapeHtml(text).split(/\r?\n/).map(s=>s.trim()).slice(0,maxLines);
-      return lines.join('<br>');
-    }
+    /* ===== level tabs ===== */
+    function initLevelTabs(){
+      levelTabsEl.innerHTML = '';
+      LEVEL_TABS.forEach((l,i)=>{
+        const b = document.createElement('button');
+        b.className = 'tab' + (i===0? ' active':'');
+        b.textContent = l;
+        b.addEventListener('click', ()=> {
+          document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active'));
+          b.classList.add('active');
+          renderPosts();
+        });
+        levelTabsEl.appendChild(b);
+      });
+    }
 
-    function createAuthorInfoHtml(p){
-      const userName = escapeHtml(p.authorName||'익명');
-      const avatarUrl = p.authorAvatar || DEFAULT_AVATAR;
+    /* ===== Firestore listeners ===== */
+    const postsRef = collection(db, POSTS_COLL);
+    const qAll = query(postsRef, orderBy('createdAtTS','desc')); // order by server timestamp for reliable ordering
 
-      // ✅ Discord ID가 있는 경우에만 메시지 전송 링크 생성
-      const authorLink = p.authorId 
-        ? `<a class="author-info" href="https://discord.com/users/${p.authorId}" target="_blank" rel="noopener noreferrer">
-            <img src="${avatarUrl}" alt="${userName} 아바타">
-            <span>${userName}</span>
-         </a>` 
-        : `<div class="author-info">
-            <img src="${DEFAULT_AVATAR}" alt="${userName} 아바타">
-            <span>${userName}</span>
-         </div>`;
+    let cachedPosts = [];
+    onSnapshot(qAll, snapshot => {
+      cachedPosts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      // render depending on view
+      if(mainView.classList.contains('hidden')){
+        renderRegionPosts();
+      } else {
+        renderPosts();
+      }
+    }, err => {
+      console.error('Firestore snapshot error', err);
+    });
 
-      return authorLink;
-    }
+    /* ===== render functions ===== */
+    // 모집글 최대 라인 수를 MAX_POST_LINES (8)로 변경
+    function limitLinesToHtml(text, maxLines=MAX_POST_LINES){
+      const lines = escapeHtml(text).split(/\r?\n/).map(s=>s.trim()).slice(0,maxLines);
+      return lines.join('<br>');
+    }
 
-    function renderPosts(){
-      postsList.innerHTML = '';
-      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
-      const filtered = cachedPosts.filter(p => p.type === 'board' && !p.region && p.level === levelActive);
-      
-      if(filtered.length===0){
-        postsList.innerHTML = '<div class="small">해당 레벨대에 등록된 모집글이 없습니다.</div>';
-        return;
-      }
-      
-      filtered.forEach(p => {
-        const created = p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : (p.createdAtISO ? new Date(p.createdAtISO) : new Date());
-        // ✅ 최대 8줄 허용
-        const contentHtml = limitLinesToHtml(p.content, MAX_POST_LINES); 
-        const authorInfoHtml = createAuthorInfoHtml(p);
-        
-        const div = document.createElement('div'); div.className='post';
-        div.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorInfoHtml}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
-        postsList.appendChild(div);
-      });
-    }
+    function renderPosts(){
+      postsList.innerHTML = '';
+      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
+      const filtered = cachedPosts.filter(p => p.type === 'board' && !p.region && p.level === levelActive);
+      if(filtered.length===0){
+        postsList.innerHTML = '<div class="small">해당 레벨대에 등록된 모집글이 없습니다.</div>';
+        return;
+      }
+      filtered.forEach(p => {
+        const created = p.createdAtISO ? new Date(p.createdAtISO) : (p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : new Date());
+        // Discord 링크 생성 함수 사용
+        const authorLinkHtml = createAuthorLinkHtml(p);
+        const contentHtml = limitLinesToHtml(p.content);
+        const div = document.createElement('div'); div.className='post';
+        div.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorLinkHtml}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
+        postsList.appendChild(div);
+      });
+    }
 
-    function renderRegionPosts(){
-      regionPosts.innerHTML = '';
-      if(!activeRegion) return;
-      const filtered = cachedPosts.filter(p => p.type === 'board' && p.region === activeRegion);
-      
-      if(filtered.length===0){ regionPosts.innerHTML = '<div class="small">해당 지역에 등록된 모집글이 없습니다.</div>'; return; }
-      
-      filtered.forEach(p=>{
-        const created = p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : (p.createdAtISO ? new Date(p.createdAtISO) : new Date());
-        // ✅ 최대 8줄 허용
-        const contentHtml = limitLinesToHtml(p.content, MAX_POST_LINES); 
-        const authorInfoHtml = createAuthorInfoHtml(p);
+    function renderRegionPosts(){
+      regionPosts.innerHTML = '';
+      if(!activeRegion) return;
+      const filtered = cachedPosts.filter(p => p.type === 'board' && p.region === activeRegion);
+      if(filtered.length===0){ regionPosts.innerHTML = '<div class="small">해당 지역에 등록된 모집글이 없습니다.</div>'; return; }
+      filtered.forEach(p=>{
+        const created = p.createdAtISO ? new Date(p.createdAtISO) : (p.createdAtTS && p.createdAtTS.toDate ? p.createdAtTS.toDate() : new Date());
+        // Discord 링크 생성 함수 사용
+        const authorLinkHtml = createAuthorLinkHtml(p);
+        const contentHtml = limitLinesToHtml(p.content);
+        const d = document.createElement('div'); d.className='post';
+        d.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorLinkHtml}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
+        regionPosts.appendChild(d);
+      });
+    }
 
-        const d = document.createElement('div'); d.className='post';
-        d.innerHTML = `<div style="font-weight:700">${contentHtml}</div><div class="meta"><div>${authorInfoHtml}</div><div>${created.toLocaleString('ko-KR')}</div></div>`;
-        regionPosts.appendChild(d);
-      });
-    }
+    /* ===== create doc helper (store createdAtISO + serverTimestamp) ===== */
+    async function createPostDoc(obj){
+      try{
+        await addDoc(postsRef, { ...obj, createdAtISO: new Date().toISOString(), createdAtTS: serverTimestamp() });
+      }catch(e){
+        console.error('addDoc error', e);
+        // alert('서버에 저장하지 못했습니다.'); // alert 제거 대신 console.error만 사용
+      }
+    }
 
-    /* ===== create doc helper (FireStore에 게시글 저장) ===== */
-    async function createPostDoc(obj, errorEl){
-      try{
-        await addDoc(postsRef, { ...obj, createdAtISO: new Date().toISOString(), createdAtTS: serverTimestamp() });
-      }catch(e){
-        console.error('addDoc error', e);
-        showMessage(errorEl, '게시글 저장에 실패했습니다.');
-      }
-    }
+    /* ===== posting (main) ===== */
+    submitPost.addEventListener('click', async ()=>{
+      const user = loadUser();
+      if(!user) return console.error('글 작성은 로그인 후 가능합니다.'); // alert 대신 console.error
+      if(getRemainingMs('post_cd')>0) return console.error('게시글 쿨타임이 적용중입니다.'); // alert 대신 console.error
+      const content = postContent.value.trim();
+      if(!content) return console.error('내용을 입력하세요.'); // alert 대신 console.error
+      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
+      
+      // 작성자 아바타 정보 추가
+      await createPostDoc({ type:'board', content, authorId:user.id||null, authorName:user.username||'익명', authorAvatar:user.avatar||null, level:levelActive, region:null });
+      
+      setCooldown('post_cd', POST_CD_MS);
+      postContent.value='';
+    });
 
-    /* ===== posting (main) - 레벨 정보 포함 저장 ===== */
-    submitPost.addEventListener('click', async ()=>{
-      postErrorEl.textContent = ''; // 에러 메시지 초기화
-      const user = loadUser();
-      if(!user) return showMessage(postErrorEl, '글 작성은 로그인 후 가능합니다.');
-      if(getRemainingMs('post_cd')>0) return showMessage(postErrorEl, `게시글 쿨타임이 적용중입니다. (${ formatMinutes(getRemainingMs('post_cd')) }분 남음)`);
-      
-      const content = postContent.value.trim();
-      if(!content) return showMessage(postErrorEl, '내용을 입력하세요.');
-      
-      const lines = content.split(/\r?\n/).filter(s => s.trim().length > 0);
-      if (lines.length > MAX_POST_LINES) return showMessage(postErrorEl, `게시글은 최대 ${MAX_POST_LINES}줄까지만 허용됩니다. 현재 ${lines.length}줄.`);
+    /* ===== posting (region) ===== */
+    regionSubmit.addEventListener('click', async ()=>{
+      const user = loadUser();
+      if(!user) return console.error('글 작성은 로그인 후 가능합니다.'); // alert 대신 console.error
+      if(getRemainingMs('post_cd')>0) return console.error('게시글 쿨타임이 적용중입니다.'); // alert 대신 console.error
+      const content = regionPostContent.value.trim();
+      if(!content) return console.error('내용을 입력하세요.'); // alert 대신 console.error
+      
+      // 작성자 아바타 정보 추가
+      await createPostDoc({ type:'board', content, authorId:user.id||null, authorName:user.username||'익명', authorAvatar:user.avatar||null, level:null, region:activeRegion });
+      
+      setCooldown('post_cd', POST_CD_MS);
+      regionPostContent.value='';
+    });
 
-      const levelActive = document.querySelector('#levelTabs .tab.active')?.textContent || LEVEL_TABS[0];
-      
-      // ✅ authorAvatar 필드 추가하여 저장
-      await createPostDoc({ 
-        type:'board', 
-        content, 
-        authorId:user.id||null, 
-        authorName:user.username||'익명', 
-        authorAvatar:user.avatar||DEFAULT_AVATAR, // ✅ 아바타 URL 저장
-        level:levelActive, 
-        region:null 
-      }, postErrorEl);
-      
-      setCooldown('post_cd', POST_CD_MS);
-      postContent.value='';
-    });
+    /* ===== cooldown UI updater ===== */
+    setInterval(()=> {
+      const rem = getRemainingMs('post_cd');
+      postCooldownEl.textContent = rem>0 ? `게시글 쿨타임: ${ (rem/60000).toFixed(1) }분 남음` : '';
+      // 지역 모집 쿨타임도 업데이트 (동일한 키 사용)
+      regionPostCooldown.textContent = rem>0 ? `게시글 쿨타임: ${ (rem/60000).toFixed(1) }분 남음` : '';
+    }, 1000);
 
-    /* ===== posting (region) ===== */
-    regionSubmit.addEventListener('click', async ()=>{
-      regionPostErrorEl.textContent = ''; // 에러 메시지 초기화
-      const user = loadUser();
-      if(!user) return showMessage(regionPostErrorEl, '글 작성은 로그인 후 가능합니다.');
-      if(getRemainingMs('post_cd')>0) return showMessage(regionPostErrorEl, `게시글 쿨타임이 적용중입니다. (${ formatMinutes(getRemainingMs('post_cd')) }분 남음)`);
-      
-      const content = regionPostContent.value.trim();
-      if(!content) return showMessage(regionPostErrorEl, '내용을 입력하세요.');
+    /* ===== region selection + history ===== */
+    let activeRegion = null;
+    worldEls.forEach(w => w.addEventListener('click', ()=>{
+      activeRegion = w.dataset.id;
+      document.getElementById('regionTitle').textContent = w.querySelector('.label').textContent + ' 모집';
+      mainView.classList.add('hidden'); regionView.classList.remove('hidden');
+      renderRegionPosts();
+      history.pushState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
+    }));
 
-      const lines = content.split(/\r?\n/).filter(s => s.trim().length > 0);
-      if (lines.length > MAX_POST_LINES) return showMessage(regionPostErrorEl, `게시글은 최대 ${MAX_POST_LINES}줄까지만 허용됩니다. 현재 ${lines.length}줄.`);
+    backBtn.addEventListener('click', ()=> {
+      history.back();
+    });
 
-      // ✅ authorAvatar 필드 추가하여 저장
-      await createPostDoc({ 
-        type:'board', 
-        content, 
-        authorId:user.id||null, 
-        authorName:user.username||'익명', 
-        authorAvatar:user.avatar||DEFAULT_AVATAR, // ✅ 아바타 URL 저장
-        level:null, 
-        region:activeRegion 
-      }, regionPostErrorEl);
-      
-      setCooldown('post_cd', POST_CD_MS);
-      regionPostContent.value='';
-    });
+    window.addEventListener('popstate', (e)=>{
+      if(e.state && e.state.region){
+        activeRegion = e.state.region;
+        document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${activeRegion}"] .label`).textContent + ' 모집';
+        mainView.classList.add('hidden'); regionView.classList.remove('hidden');
+        renderRegionPosts();
+      } else {
+        activeRegion = null;
+        mainView.classList.remove('hidden'); regionView.classList.add('hidden');
+        renderPosts();
+      }
+    });
 
-    /* ===== cooldown UI updater ===== */
-    setInterval(()=> {
-      const rem = getRemainingMs('post_cd');
-      postCooldownEl.textContent = rem>0 ? `게시글 쿨타임: ${ (rem/60000).toFixed(1) }분 남음` : '';
-      regionPostCooldown.textContent = rem>0 ? `게시글 쿨타임: ${ (rem/60000).toFixed(1) }분 남음` : '';
-    }, 1000);
+    // logo click -> go main
+    logoBtn.addEventListener('click', ()=> {
+      activeRegion = null;
+      mainView.classList.remove('hidden'); regionView.classList.add('hidden');
+      history.pushState({}, '', REDIRECT_URI);
+      renderPosts();
+    });
 
-    /* ===== region selection + history (창 전환 핵심 로직) ===== */
-    let activeRegion = null;
-    
-    worldEls.forEach(w => w.addEventListener('click', ()=>{
-      activeRegion = w.dataset.id;
-      document.getElementById('regionTitle').textContent = w.querySelector('.label').textContent + ' 모집';
-      
-      mainView.classList.add('hidden'); 
-      regionView.classList.remove('hidden');
-      
-      renderRegionPosts();
-      history.pushState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
-    }));
+    // on load: open region if hash exists
+    window.addEventListener('load', ()=>{
+      initLevelTabs();
+      const hash = decodeURIComponent(location.hash.replace('#','')) || '';
+      if(hash && REGIONS.includes(hash)){
+        activeRegion = hash;
+        document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${hash}"] .label`).textContent + ' 모집';
+        mainView.classList.add('hidden'); regionView.classList.remove('hidden');
+        renderRegionPosts();
+        history.replaceState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
+      }
+      // try login session
+      tryHandleDiscordLogin();
+    });
 
-    backBtn.addEventListener('click', ()=> {
-      history.back(); 
-    });
+    /* ===== Discord login flow (implicit) ===== */
+    loginBtn.addEventListener('click', ()=> {
+      const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
+      window.location.href = url;
+    });
 
-    window.addEventListener('popstate', (e)=>{
-      if(e.state && e.state.region){
-        activeRegion = e.state.region;
-        mainView.classList.add('hidden'); 
-        regionView.classList.remove('hidden');
-        document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${activeRegion}"] .label`).textContent + ' 모집';
-        renderRegionPosts();
-      } else {
-        activeRegion = null;
-        mainView.classList.remove('hidden'); 
-        regionView.classList.add('hidden');
-        renderPosts();
-      }
-    });
+    async function tryHandleDiscordLogin(){
+      const hash = window.location.hash || '';
+      if(hash.includes('access_token')){
+        try{
+          const params = new URLSearchParams(hash.replace('#',''));
+          const token = params.get('access_token');
+          // fetch user info
+          const res = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
+          if(!res.ok) throw new Error('discord fetch failed');
+          const user = await res.json();
+          // prefer global_name, fallback username
+          const displayName = user.global_name || user.username;
+          const avatarUrl = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png';
+          // avatar, username, id, token 모두 저장
+          const u = { id: user.id, username: displayName, avatar: avatarUrl, token };
+          saveUser(u);
+          renderLoginArea(u);
+          // remove token from url
+          history.replaceState(null,'',REDIRECT_URI);
+        }catch(err){
+          console.error(err);
+          // alert('디스코드 로그인 실패 — Redirect/Implicit 설정을 확인하세요.'); // alert 제거
+          history.replaceState(null,'',REDIRECT_URI);
+        }
+      } else {
+        const u = loadUser();
+        if(u) renderLoginArea(u);
+      }
+    }
 
-    logoBtn.addEventListener('click', ()=> {
-      activeRegion = null;
-      mainView.classList.remove('hidden'); regionView.classList.add('hidden');
-      history.pushState({}, '', REDIRECT_URI);
-      renderPosts();
-    });
+    function renderLoginArea(user){
+      loginArea.innerHTML = `
+        <img src="${user.avatar}" alt="avatar" width="28" height="28" style="border-radius:6px;object-fit:cover;vertical-align:middle">
+        <span style="font-weight:700;margin-left:6px">${escapeHtml(user.username)}</span>
+        <button id="logoutBtn" style="background:#2f3136;color:white;border:none;padding:6px 8px;border-radius:8px;cursor:pointer">로그아웃</button>
+      `;
+      document.getElementById('logoutBtn').addEventListener('click', ()=> {
+        localStorage.removeItem(USER_KEY);
+        // also remove access token if stored in url or localStorage (we store only user)
+        location.reload();
+      });
+    }
 
-    // 로드 시: URL 해시값에 따라 지역 뷰 또는 메인 뷰 표시
-    window.addEventListener('load', ()=>{
-      initLevelTabs();
-      const hash = decodeURIComponent(location.hash.replace('#','')) || '';
-      if(hash && REGIONS.includes(hash)){
-        activeRegion = hash;
-        document.getElementById('regionTitle').textContent = document.querySelector(`[data-id="${hash}"] .label`).textContent + ' 모집';
-        mainView.classList.add('hidden'); regionView.classList.remove('hidden');
-        renderRegionPosts();
-        history.replaceState({ region: activeRegion }, '', '#'+encodeURIComponent(activeRegion));
-      }
-      // Discord 로그인 처리 시도
-      tryHandleDiscordLogin();
-    });
-
-    /* ===== Discord login flow (디스코드 로그인) ===== */
-    loginBtn.addEventListener('click', ()=> {
-      const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
-      window.location.href = url;
-    });
-
-    async function tryHandleDiscordLogin(){
-      const hash = window.location.hash || '';
-      if(hash.includes('access_token')){
-        try{
-          const params = new URLSearchParams(hash.replace('#',''));
-          const token = params.get('access_token');
-          // fetch user info
-          const res = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
-          if(!res.ok) throw new Error('discord fetch failed');
-          const user = await res.json();
-          
-          const displayName = user.global_name || user.username;
-          // ✅ 유저 아바타 URL을 가져옵니다.
-          const avatarUrl = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=32` : DEFAULT_AVATAR; 
-          
-          // ✅ 유저 ID와 아바타 URL을 localStorage에 저장
-          const u = { id: user.id, username: displayName, avatar: avatarUrl, token }; 
-          saveUser(u);
-          renderLoginArea(u);
-          history.replaceState(null,'',REDIRECT_URI);
-        }catch(err){
-          console.error(err);
-          console.error('디스코드 로그인 실패 — Redirect/Implicit 설정을 확인하세요.');
-          history.replaceState(null,'',REDIRECT_URI);
-        }
-      } else {
-        const u = loadUser();
-        if(u) renderLoginArea(u);
-      }
-    }
-
-    function renderLoginArea(user){
-      loginArea.innerHTML = `
-        <img src="${user.avatar}" alt="avatar" width="28" height="28" style="border-radius:6px;object-fit:cover;vertical-align:middle">
-        <span style="font-weight:700;margin-left:6px">${escapeHtml(user.username)}</span>
-        <button id="logoutBtn" style="background:#2f3136;color:white;border:none;padding:6px 8px;border-radius:8px;cursor:pointer">로그아웃</button>
-      `;
-      document.getElementById('logoutBtn').addEventListener('click', ()=> {
-        localStorage.removeItem(USER_KEY);
-        location.reload();
-      });
-    }
-
-  </script>
+  </script>
 </body>
 </html>
 
