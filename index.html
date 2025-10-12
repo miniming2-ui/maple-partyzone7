@@ -6,6 +6,11 @@
   <title>메랜파티존 | Maple Party Zone</title>
   <meta name="description" content="메이플랜드 파티모집 - 메랜파티존" />
   <meta name="robots" content="index,follow" />
+  <!-- 나눔고딕 웹폰트 임포트 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+  
   <style>
     /* ===== 다크 테마 적용 ===== */
     :root{
@@ -18,7 +23,8 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:Inter, 'Noto Sans KR', system-ui, sans-serif;
+      /* [변경] 나눔고딕 적용 */
+      font-family:'Nanum Gothic', 'Noto Sans KR', system-ui, sans-serif;
       background:var(--page-bg);
       color:var(--text);
       -webkit-font-smoothing:antialiased;
@@ -34,16 +40,41 @@
     #loginArea{display:flex;align-items:center;gap:8px}
     #loginArea button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:white;cursor:pointer}
     
-    /* 월드 탭 레이아웃 조정 및 이미지 적용 */
+    /* 검색 필드 스타일 */
+    #searchBar {
+        width: 250px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: #1e1f22;
+        color: var(--text);
+        font-size: 14px;
+        margin-right: 15px; /* 로그인 버튼과의 간격 */
+    }
+    @media(max-width:768px){
+        #searchBar {
+            width: 150px;
+            margin-right: 8px;
+        }
+    }
+
+
+    /* 월드 섹션 (지역별 파티 모집) 스타일 */
+    .world-section-title {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 10px 18px 0;
+        font-weight: 700;
+        font-size: 16px;
+    }
     .worlds{
         display:flex;
         gap:8px; 
         padding:12px 18px; 
-        /* 배경 이미지와 잘 어울리도록 살짝 어둡게 처리 */
         background: rgba(0, 0, 0, 0.1); 
     }
     .world{
-        flex:1; 
+        flex:1; /* 월드 버튼 균등하게 나누기 */
         min-width:0; 
         height:100px; /* 이미지 표시를 위해 높이 증가 */
         border-radius:8px;
@@ -52,7 +83,7 @@
         background-repeat: no-repeat;
         position:relative;
         cursor:pointer;
-        border:1px solid rgba(255,255,255,0.1); /* 어두운 배경에 맞는 테두리 */
+        border:1px solid rgba(255,255,255,0.1); /* 어두운 배경에 맞는 구분선 */
         transition: transform 0.2s, box-shadow 0.2s;
     }
     .world:hover {
@@ -60,18 +91,15 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
 
-    /* *** [수정 부분] 이미지 경로 설정 - images 폴더 사용 ***
-    GitHub에 images 폴더를 생성하고 모든 이미지 파일을 그 안에 넣었다는 가정 하에 
-    경로를 './images/[파일명].png'로 수정했습니다. 
-    */
-    .world[data-id="victoria"] { background-image: url('./images/victoria.png'); }
-    .world[data-id="elnath"] { background-image: url('./images/elnath.png'); }
-    .world[data-id="luduslake"] { background-image: url('./images/luduslake.png'); }
-    .world[data-id="minar"] { background-image: url('./images/minar.png'); }
-    .world[data-id="aqua"] { background-image: url('./images/aqua.png'); }
-    .world[data-id="nihal"] { background-image: url('./images/nihal.png'); }
+    /* 이미지 경로 설정 (임시) - 영문 텍스트 삭제됨 */
+    .world[data-id="victoria"] { background-image: url('https://placehold.co/300x100/3e4047/ffffff'); }
+    .world[data-id="elnath"] { background-image: url('https://placehold.co/300x100/3e4047/ffffff'); }
+    .world[data-id="luduslake"] { background-image: url('https://placehold.co/300x100/3e4047/ffffff'); }
+    .world[data-id="minar"] { background-image: url('https://placehold.co/300x100/3e4047/ffffff'); }
+    .world[data-id="aqua"] { background-image: url('https://placehold.co/300x100/3e4047/ffffff'); }
+    .world[data-id="nihal"] { background-image: url('https://placehold.co/300x100/3e4047/ffffff'); }
 
-    /* 레이블 스타일 (어두운 배경 위에서 잘 보이도록) */
+    /* 레이블 스타일 */
     .world .label{
         position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
         font-weight:800;font-size:14px;color:white;
@@ -88,25 +116,67 @@
       box-shadow:none; /* 다크 모드에서는 그림자 제거 */
       border:1px solid rgba(255,255,255,0.06); /* 어두운 테두리 */
     }
-    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    
+    /* [수정] 레벨 탭 컨테이너의 새로운 스타일: 월드바와 동일하게 배치 */
+    #levelTabsWrapper {
+        display: flex;
+        gap: 8px;
+        padding: 12px 18px;
+        background: rgba(0, 0, 0, 0.1);
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    /* [수정] 레벨 탭 버튼 그룹 스타일 */
+    #levelTabs{
+      display:flex;
+      gap:8px; /* 버튼 간격 조정: 4px에서 8px로 */
+      margin-top:0px;
+      width: 100%; /* 부모 컨테이너 너비 채우기 */
+    }
     .tab{
-      padding:8px 12px;
-      border-radius:8px;
+      flex:1; /* 레벨 버튼들이 균등한 크기를 가지도록 설정 */
+      min-width:0;
+      height:100px; /* [핵심 수정] 월드 버튼과 동일한 높이로 설정 */
+      display: flex; /* 내부 텍스트 중앙 정렬을 위해 flex 사용 */
+      align-items: center;
+      justify-content: center;
+      padding:6px 10px;
+      border-radius:8px; /* 둥근 모서리 */
       background:var(--card-bg); /* 다크 배경에 맞게 수정 */
       color:var(--muted);
       cursor:pointer;
       font-weight:700;
+      font-size: 0.95rem; /* 텍스트 크기 약간 증가 */
       border:1px solid rgba(255,255,255,0.1);
+      transition: background 0.2s, transform 0.2s;
     }
-    .tab.active{background:linear-gradient(90deg,var(--accent),#3e86ff);color:white}
+    /* 탭 호버 효과 추가 */
+    .tab:not(.active):hover {
+        transform: translateY(-3px); /* 월드 버튼과 동일하게 변경 */
+        background: #40444b;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* 월드 버튼과 동일하게 변경 */
+    }
+
+    .tab.active{
+        background:linear-gradient(90deg,var(--accent),#3e86ff);
+        color:white;
+        transform: none !important;
+        box-shadow: 0 2px 5px rgba(88, 101, 242, 0.4);
+    }
     
+    /* [삭제] 이전 코드에서 사용했던 levelMajorTab 관련 스타일 제거 */
+    #levelMajorTab { display: none; }
+
+
     /* 입력 필드 스타일 조정 */
     input,textarea{
       width:100%;padding:10px;border-radius:8px;
       border:1px solid rgba(255,255,255,0.1); /* 어두운 배경에 맞는 테두리 */
       background:#1e1f22; /* 어두운 입력 필드 배경 */
       color:var(--text);
-      font-size:14px;line-height:1.4
+      font-size:14px;line-height:1.4;
+      font-family:'Nanum Gothic', 'Noto Sans KR', system-ui, sans-serif; /* 입력 필드에도 폰트 적용 */
     }
     textarea{min-height:70px;resize:vertical} 
     
@@ -145,21 +215,42 @@
 
     /* 반응형 */
     @media(max-width:768px){ 
+      /* 월드바 스크롤 */
       .worlds { 
-        padding: 12px 12px; 
+        padding: 0 12px;
+        margin: 0 -12px; 
         overflow-x: scroll; 
         white-space: nowrap; 
+        gap: 8px; 
       }
       .world {
-        flex: 0 0 150px; /* 모바일에서 스크롤 가능하도록 고정 너비 설정 */
+        flex: 0 0 130px; 
         height: 80px;
       }
+      /* 레벨 탭 스크롤 */
+      #levelTabsWrapper {
+        padding: 0 12px;
+        margin: 0 -12px;
+        overflow-x: scroll; /* 모바일에서 스크롤 가능하게 설정 */
+      }
+      #levelTabs {
+          flex-wrap: nowrap; /* 스크롤을 위해 줄바꿈 방지 */
+          width: auto; /* 내용에 맞춰 너비 설정 */
+          padding: 0;
+      }
+      .tab {
+          flex: 0 0 130px; /* 월드 버튼과 동일한 너비와 높이 설정 */
+          height: 80px; 
+          transform: none !important;
+          box-shadow: none !important;
+      }
+
+      /* 모바일에서는 탭 컨테이너의 padding을 제거 */
+      #levelTabsContainer {
+          padding: 0;
+          margin-bottom: 20px;
+      }
       .container{padding:0 12px} 
-    }
-    @media(min-width:769px) {
-        .world {
-            flex: 1; 
-        }
     }
   </style>
 </head>
@@ -167,12 +258,15 @@
   <header>
     <div class="logo" id="logoBtn">🍁 메랜파티존</div>
     <div id="loginArea">
+      <!-- 검색 입력 필드 추가 -->
+      <input type="search" id="searchBar" placeholder="제목/내용 검색..." />
       <button id="loginBtn">디스코드 로그인</button>
     </div>
   </header>
 
+  <!-- 지역별 모집 타이틀 -->
+  <div class="world-section-title">지역별 파티 모집</div>
   <div class="worlds" id="worldBar">
-    <!-- data-id를 파일명과 일치하는 영문 소문자로 유지했습니다. -->
     <div class="world" data-id="victoria"><div class="label">빅토리아</div></div>
     <div class="world" data-id="elnath"><div class="label">엘나스</div></div>
     <div class="world" data-id="luduslake"><div class="label">루더스 호수</div></div>
@@ -180,12 +274,19 @@
     <div class="world" data-id="aqua"><div class="label">아쿠아 로드</div></div>
     <div class="world" data-id="nihal"><div class="label">니할 사막</div></div>
   </div>
+  
+  <!-- [추가] 레벨별 모집 타이틀 -->
+  <div class="world-section-title" style="margin-top: 20px;">레벨대별 파티 모집</div>
+  <!-- [수정] 레벨 탭을 월드바와 동일한 컨테이너(levelTabsWrapper) 안에 배치 -->
+  <div id="levelTabsWrapper">
+    <!-- 레벨 탭 버튼들이 들어갈 자리 (levelMajorTab 역할 삭제) -->
+    <div id="levelTabs" class="tabs"></div>
+  </div>
 
   <div class="container">
-    <!-- 레벨 탭 (메인 화면에서 항상 표시) -->
-    <div id="levelTabsContainer" style="max-width: 550px; margin: 0 auto 20px;"> 
-        <div class="small" style="margin-bottom: 8px; text-align: center; color: var(--text); font-weight: 600;">레벨대별 파티 모집</div>
-        <div id="levelTabs" class="tabs" style="justify-content: center;"></div>
+    <!-- 레벨 탭 (메인 화면에서 항상 표시) - 이전 코드를 위해 남겨두었으나, 이제 상단의 levelTabsWrapper가 대체함 -->
+    <div id="levelTabsContainer" class="hidden"> 
+        <div class="small" style="font-weight: 700; color: var(--text);">레벨대별 파티 모집</div>
     </div>
     
     <!-- LEVEL POST VIEW (레벨 탭 클릭 시 표시되는 모집 페이지) -->
@@ -197,7 +298,7 @@
         </div>
         <div style="display:flex;justify-content:flex-end;align-items:center; gap: 12px;">
             <div id="levelPostCooldownInfo" class="small">게시글 쿨타임: 3분</div>
-            <button id="levelBackBtn" class="tab">메인으로 돌아가기</button>
+            <button id="levelBackBtn" class="tab" style="flex:unset; min-width:unset; border-radius:8px; border-left: 1px solid rgba(255,255,255,0.1); height: auto !important;">메인으로 돌아가기</button>
         </div>
       </div>
 
@@ -220,7 +321,7 @@
           <div class="small">선택한 대륙의 모집글만 표시됩니다</div>
         </div>
         <div style="display:flex;justify-content:flex-end;align-items:center; gap: 12px;">
-          <button id="regionBackBtn" class="tab">메인으로 돌아가기</button>
+          <button id="regionBackBtn" class="tab" style="flex:unset; min-width:unset; border-radius:8px; border-left: 1px solid rgba(255,255,255,0.1); height: auto !important;">메인으로 돌아가기</button>
         </div>
       </div>
 
@@ -241,7 +342,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    // ========== firebaseConfig (이미 제공하신 값) ==========
+    /* ===== firebaseConfig (provided) ===== */
     const firebaseConfig = {
       apiKey: "AIzaSyB059CBnkyxlsZ_KbYGcI",
       authDomain: "maple-partyzone.firebaseapp.com", 
@@ -251,14 +352,12 @@
       appId: "1:853981783847:web:2305406459583a8f072b02",
       measurementId: "G-CNGYW8FF27"
     };
-    // ======================================================
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     /* ===== config ===== */
     const CLIENT_ID = "1424448769113456752";
-    // *** [수정] index.html이 루트 파일이므로 REDIRECT_URI를 기본 경로로 설정했습니다. ***
     const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/"; 
     const OAUTH_SCOPE = "identify";
     const LEVEL_TABS = ['10~30','30~50','50~80','80~100','100~130','130 이상'];
@@ -266,16 +365,18 @@
     const MAX_POST_LINES = 8;
     
     // !!! 관리자 ID 설정: 이 ID와 로그인한 유저 ID가 일치하면 모든 글을 삭제할 수 있습니다. !!!
-    // TODO: 운영자님의 실제 디스코드 사용자 ID로 변경해주세요.
     const ADMIN_USER_ID = "YOUR_ADMIN_DISCORD_ID"; 
 
 
     /* ===== UI refs ===== */
     const worldEls = document.querySelectorAll('.world');
-    const levelTabsContainer = document.getElementById('levelTabsContainer');
+    // const levelMajorTabEl = document.getElementById('levelMajorTab'); // [삭제] levelMajorTab 엘리먼트 참조 제거
     const levelTabsEl = document.getElementById('levelTabs');
 
-    // Level View Refs (New or Renamed)
+    // Search
+    const searchBar = document.getElementById('searchBar');
+
+    // Level View Refs
     const levelView = document.getElementById('levelView');
     const levelTitle = document.getElementById('levelTitle');
     const levelPostContent = document.getElementById('levelPostContent');
@@ -301,7 +402,8 @@
 
     /* ===== State ===== */
     let activeRegion = null;
-    let activeLevel = LEVEL_TABS[0]; // Set default active level for history
+    let activeLevel = LEVEL_TABS[0]; 
+    let currentSearchTerm = '';
 
     /* ===== cooldowns (ms) ===== */
     const POST_CD_MS = 3 * 60 * 1000;
@@ -314,11 +416,10 @@
     function now(){ return Date.now(); }
     function setCooldown(key, ms){ localStorage.setItem(key, String(Date.now()+ms)); }
     function getRemainingMs(key){ const v = parseInt(localStorage.getItem(key)||'0',10); const rem = v - Date.now(); return rem>0?rem:0; }
-    function formatMinutes(ms){ return Math.max( (ms/60000).toFixed(1), 0 ); }
     function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
     function saveUser(u){ localStorage.setItem(USER_KEY, JSON.stringify(u)); }
     function loadUser(){ try{ return JSON.parse(localStorage.getItem(USER_KEY)||'null'); }catch(e){return null} }
+
 
     /* Discord 프로필 링크를 포함한 작성자 HTML 생성 함수 */
     function createAuthorLinkHtml(post) {
@@ -349,14 +450,17 @@
       levelTabsEl.innerHTML = '';
       LEVEL_TABS.forEach((l)=>{
         const b = document.createElement('button');
-        b.className = 'tab'; // No active class initially, it's a navigation button now
+        b.className = 'tab'; 
         b.textContent = l;
-        b.addEventListener('click', ()=> {
-          showLevelView(l); // Navigate to new view
+        b.addEventListener('click', (e)=> {
+          e.stopPropagation(); 
+          showLevelView(l); 
           history.pushState({ view: 'level', level: l }, '', '#level-'+encodeURIComponent(l));
         });
         levelTabsEl.appendChild(b);
       });
+      
+      // [삭제] levelMajorTab 클릭 이벤트 제거
     }
 
     /* ===== Post Deletion Logic ===== */
@@ -371,8 +475,9 @@
         const isAdmin = user.id === ADMIN_USER_ID;
 
         if (isAuthor || isAdmin) {
-            // 사용자에게 삭제 의도를 확인하는 간략한 로직 (alert/confirm 대체)
-            if(confirm('정말로 이 모집글을 삭제하시겠습니까? (삭제된 글은 복구되지 않습니다)')) {
+            // 커스텀 모달 UI 대신 임시로 confirm 사용
+            const confirmation = window.confirm('정말로 이 모집글을 삭제하시겠습니까? (삭제된 글은 복구되지 않습니다)');
+            if(confirmation) {
                 const postRef = doc(db, POSTS_COLL, postId);
                 try {
                     await deleteDoc(postRef);
@@ -388,12 +493,9 @@
         }
     }
     
-    // 주의: Canvas 환경에서는 confirm/alert 사용이 권장되지 않으나, 대체 UI 구현을 피하기 위해 임시로 사용합니다.
-
-
     /* ===== Firestore listeners ===== */
     const postsRef = collection(db, POSTS_COLL);
-    const qAll = query(postsRef, orderBy('createdAtTS','desc')); // order by server timestamp for reliable ordering
+    const qAll = query(postsRef, orderBy('createdAtTS','desc')); 
 
     let cachedPosts = [];
     onSnapshot(qAll, snapshot => {
@@ -438,15 +540,38 @@
         listEl.appendChild(div);
     }
     
+    /* ===== Filter Logic ===== */
+    function filterPosts(posts, criteria) {
+        const searchTerm = currentSearchTerm.toLowerCase();
+        return posts.filter(p => {
+            // 1. View filter (Level or Region)
+            let viewMatch = true;
+            if (criteria.type === 'level') {
+                viewMatch = p.type === 'board' && !p.region && p.level === criteria.value;
+            } else if (criteria.type === 'region') {
+                viewMatch = p.type === 'board' && p.region === criteria.value;
+            }
+
+            if (!viewMatch) return false;
+
+            // 2. Search filter
+            if (searchTerm.length > 0) {
+                return p.content.toLowerCase().includes(searchTerm);
+            }
+            
+            return true;
+        });
+    }
+
     /* ===== render functions ===== */
     function renderLevelPosts(){
       levelPostsList.innerHTML = '';
-      if(!activeLevel) return; // Should not happen if levelView is visible
+      if(!activeLevel) return;
       
-      const filtered = cachedPosts.filter(p => p.type === 'board' && !p.region && p.level === activeLevel);
+      const filtered = filterPosts(cachedPosts, { type: 'level', value: activeLevel });
       
       if(filtered.length===0){
-        levelPostsList.innerHTML = '<div class="small">해당 레벨대에 등록된 모집글이 없습니다.</div>';
+        levelPostsList.innerHTML = `<div class="small">${currentSearchTerm.length > 0 ? '검색 결과가 없습니다.' : '해당 레벨대에 등록된 모집글이 없습니다.'}</div>`;
         return;
       }
       
@@ -456,12 +581,29 @@
     function renderRegionPosts(){
       regionPosts.innerHTML = '';
       if(!activeRegion) return;
-      const filtered = cachedPosts.filter(p => p.type === 'board' && p.region === activeRegion);
       
-      if(filtered.length===0){ regionPosts.innerHTML = '<div class="small">해당 지역에 등록된 모집글이 없습니다.</div>'; return; }
+      const filtered = filterPosts(cachedPosts, { type: 'region', value: activeRegion });
+      
+      if(filtered.length===0){ 
+        regionPosts.innerHTML = `<div class="small">${currentSearchTerm.length > 0 ? '검색 결과가 없습니다.' : '해당 지역에 등록된 모집글이 없습니다.'}</div></div>`;
+        return;
+      }
       
       filtered.forEach(p => createPostElement(p, regionPosts));
     }
+
+
+    /* ===== Search Bar Handler ===== */
+    searchBar.addEventListener('input', (e) => {
+        currentSearchTerm = e.target.value.trim();
+        // 검색어가 변경될 때마다 현재 활성화된 뷰를 다시 렌더링
+        if (!levelView.classList.contains('hidden')) {
+            renderLevelPosts();
+        } else if (!regionView.classList.contains('hidden')) {
+            renderRegionPosts();
+        }
+    });
+
 
     /* ===== create doc helper (store createdAtISO + serverTimestamp) ===== */
     async function createPostDoc(obj){
@@ -472,7 +614,7 @@
       }
     }
 
-    /* ===== posting (level view) ===== */
+    /* ===== posting (level view) */
     levelSubmitPost.addEventListener('click', async ()=>{
       const user = loadUser();
       if(!user) return console.error('글 작성은 로그인 후 가능합니다.'); 
@@ -494,7 +636,7 @@
       levelPostContent.value='';
     });
 
-    /* ===== posting (region view) ===== */
+    /* ===== posting (region view) */
     regionSubmit.addEventListener('click', async ()=>{
       const user = loadUser();
       if(!user) return console.error('글 작성은 로그인 후 가능합니다.'); 
@@ -545,7 +687,7 @@
         levelView.classList.remove('hidden');
         regionView.classList.add('hidden');
         
-        // Update active tab style (optional, but good UX)
+        // Update active tab style
         document.querySelectorAll('#levelTabs .tab').forEach(x => {
             x.classList.toggle('active', x.textContent === activeLevel);
         });
@@ -559,7 +701,6 @@
         activeLevel = null;
 
         // UI updates
-        // data-id에 해당하는 월드 엘리먼트에서 .label 텍스트를 가져와서 사용
         const regionLabel = document.querySelector(`.world[data-id="${activeRegion}"] .label`).textContent;
         document.getElementById('regionTitle').textContent = regionLabel + ' 모집';
         
@@ -580,6 +721,12 @@
       history.pushState({ view: 'region', region: regionId }, '', '#region-'+encodeURIComponent(regionId));
     }));
 
+    levelTabsEl.querySelectorAll('.tab').forEach(t => t.addEventListener('click', (e) => {
+        const levelRange = e.target.textContent;
+        showLevelView(levelRange);
+        history.pushState({ view: 'level', level: levelRange }, '', '#level-'+encodeURIComponent(levelRange));
+    }));
+
     levelBackBtn.addEventListener('click', ()=> {
       history.back();
     });
@@ -596,7 +743,6 @@
       } else if (state.view === 'region' && state.region){
         showRegionView(state.region);
       } else {
-        // Fallback to home view if no state or unknown state
         showHomeView();
       }
     });
@@ -675,7 +821,6 @@
           saveUser(u);
           renderLoginArea(u);
           // remove token from url
-          // *** [수정] history.replaceState의 경로를 REDIRECT_URI로 변경하여 index.html이 로드되게 함 ***
           history.replaceState(null,'',REDIRECT_URI);
         }catch(err){
           console.error(err);
@@ -689,10 +834,24 @@
 
     function renderLoginArea(user){
       loginArea.innerHTML = `
+        <input type="search" id="searchBar" placeholder="제목/내용 검색..." />
         <img src="${user.avatar}" alt="avatar" width="28" height="28" style="border-radius:6px;object-fit:cover;vertical-align:middle">
         <span style="font-weight:700;margin-left:6px">${escapeHtml(user.username)}</span>
         <button id="logoutBtn" style="background:#40444b;color:white;border:none;padding:6px 8px;border-radius:8px;cursor:pointer">로그아웃</button>
       `;
+      // 로그인 후에도 검색바 이벤트 리스너를 다시 연결 (DOM이 교체되었으므로)
+      const newSearchBar = document.getElementById('searchBar');
+      if (newSearchBar) {
+        newSearchBar.value = currentSearchTerm;
+        newSearchBar.addEventListener('input', (e) => {
+            currentSearchTerm = e.target.value.trim();
+            if (!levelView.classList.contains('hidden')) {
+                renderLevelPosts();
+            } else if (!regionView.classList.contains('hidden')) {
+                renderRegionPosts();
+            }
+        });
+      }
       document.getElementById('logoutBtn').addEventListener('click', ()=> {
         localStorage.removeItem(USER_KEY);
         location.reload();
@@ -702,4 +861,5 @@
   </script>
 </body>
 </html>
+
 
