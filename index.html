@@ -70,11 +70,8 @@
     .world-section-title {
         /* [유지] 타이틀 영역의 너비를 메인 컨테이너와 동일하게 1100px로 제한 */
         max-width: 1100px;
-        /* [수정] margin-left: auto; 제거하고 중앙 정렬 해제 */
-        margin: 20px auto 10px 0; 
-        /* [추가] 부모 컨테이너에 맞춰 중앙 정렬 */
-        margin-left: auto;
-        margin-right: auto;
+        /* [수정] 왼쪽 정렬을 위한 마진 조정 및 중앙 정렬 해제 */
+        margin: 20px auto 10px; 
         
         padding: 0 18px; 
         font-weight: 700;
@@ -308,7 +305,6 @@
   </header>
 
   <!-- 지역별 모집 타이틀 -->
-  <!-- [수정] max-width 1100px 컨테이너 안에서 좌측 정렬 -->
   <div class="world-section-title">지역별 파티 모집</div>
   <!-- 월드바를 래퍼로 감싸서 너비 고정 및 중앙 정렬 (내부 요소는 좌측 정렬) -->
   <div class="button-bar-wrapper">
@@ -323,7 +319,6 @@
   </div>
   
   <!-- 레벨별 모집 타이틀 -->
-  <!-- [수정] max-width 1100px 컨테이너 안에서 좌측 정렬 -->
   <div class="world-section-title">레벨대별 파티 모집</div>
   <!-- 레벨 탭도 래퍼로 감싸서 너비 고정 및 중앙 정렬 (내부 요소는 좌측 정렬) -->
   <div class="button-bar-wrapper">
@@ -544,6 +539,7 @@
       cachedPosts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       
       // Render based on active view
+      // [수정] 탭 변경 시에도 검색어가 유지되므로, 항상 현재 뷰를 다시 렌더링하도록 수정
       if(!levelView.classList.contains('hidden')){ 
         renderLevelPosts();
       } else if (!regionView.classList.contains('hidden')){ 
@@ -584,7 +580,9 @@
     
     /* ===== Filter Logic ===== */
     function filterPosts(posts, criteria) {
-        const searchTerm = currentSearchTerm.toLowerCase();
+        // [수정] currentSearchTerm을 전역 상태에서 가져와 필터링 적용
+        const searchTerm = currentSearchTerm.toLowerCase(); 
+        
         return posts.filter(p => {
             // 1. View filter (Level or Region)
             let viewMatch = true;
@@ -598,6 +596,7 @@
 
             // 2. Search filter
             if (searchTerm.length > 0) {
+                // 게시글 내용(content)을 기준으로 검색
                 return p.content.toLowerCase().includes(searchTerm);
             }
             
@@ -634,16 +633,20 @@
       filtered.forEach(p => createPostElement(p, regionPosts));
     }
 
-
-    /* ===== Search Bar Handler ===== */
-    searchBar.addEventListener('input', (e) => {
-        currentSearchTerm = e.target.value.trim();
-        // 검색어가 변경될 때마다 현재 활성화된 뷰를 다시 렌더링
+    // [수정] 현재 활성화된 뷰에 따라 적절한 렌더링 함수를 호출하는 범용 함수
+    function reRenderCurrentView() {
         if (!levelView.classList.contains('hidden')) {
             renderLevelPosts();
         } else if (!regionView.classList.contains('hidden')) {
             renderRegionPosts();
         }
+    }
+
+    /* ===== Search Bar Handler ===== */
+    searchBar.addEventListener('input', (e) => {
+        currentSearchTerm = e.target.value.trim();
+        // 검색어가 변경될 때마다 현재 활성화된 뷰를 다시 렌더링
+        reRenderCurrentView();
     });
 
 
@@ -734,6 +737,7 @@
             x.classList.toggle('active', x.textContent === activeLevel);
         });
 
+        // [수정] 검색어도 반영하여 렌더링
         renderLevelPosts();
     }
 
@@ -752,6 +756,7 @@
         // Clear active class from level tabs
         document.querySelectorAll('#levelTabs .tab').forEach(x=>x.classList.remove('active'));
 
+        // [수정] 검색어도 반영하여 렌더링
         renderRegionPosts();
     }
 
@@ -881,17 +886,14 @@
         <span style="font-weight:700;margin-left:6px">${escapeHtml(user.username)}</span>
         <button id="logoutBtn" style="background:#40444b;color:white;border:none;padding:6px 8px;border-radius:8px;cursor:pointer">로그아웃</button>
       `;
-      // 로그인 후에도 검색바 이벤트 리스너를 다시 연결 (DOM이 교체되었으므로)
+      // [수정] 로그인 후에도 검색바 이벤트 리스너를 다시 연결 (DOM이 교체되었으므로)
       const newSearchBar = document.getElementById('searchBar');
       if (newSearchBar) {
-        newSearchBar.value = currentSearchTerm;
+        newSearchBar.value = currentSearchTerm; // 기존 검색어 유지
         newSearchBar.addEventListener('input', (e) => {
             currentSearchTerm = e.target.value.trim();
-            if (!levelView.classList.contains('hidden')) {
-                renderLevelPosts();
-            } else if (!regionView.classList.contains('hidden')) {
-                renderRegionPosts();
-            }
+            // [수정] 검색어가 변경될 때마다 현재 활성화된 뷰를 다시 렌더링
+            reRenderCurrentView();
         });
       }
       document.getElementById('logoutBtn').addEventListener('click', ()=> {
@@ -903,5 +905,4 @@
   </script>
 </body>
 </html>
-
 
