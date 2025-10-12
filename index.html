@@ -29,11 +29,18 @@
       color:var(--text);
       -webkit-font-smoothing:antialiased;
     }
+    
+    /* [수정] 헤더 영역을 컨테이너 너비와 동일하게 중앙 정렬 */
     header{
       display:flex;align-items:center;justify-content:space-between;
       padding:12px 20px;background:transparent;
       border-bottom:1px solid rgba(255,255,255,0.08); /* 어두운 배경에 맞는 구분선 */
+      /* [추가] 헤더 내부 콘텐츠를 1100px로 제한하고 중앙 정렬 */
+      max-width: 1100px; 
+      margin: 0 auto;
+      width: 100%;
     }
+    
     .logo{
       font-weight:800;color:var(--text);font-size:1.2rem;cursor:pointer;
     }
@@ -59,32 +66,34 @@
     }
 
 
-    /* [수정] 월드/레벨 섹션 타이틀 스타일: 좌측 끝으로 이동 */
+    /* 월드/레벨 섹션 타이틀 스타일: 좌측 끝으로 이동 */
     .world-section-title {
+        /* [수정] 타이틀 영역의 너비를 메인 컨테이너와 동일하게 1100px로 제한 */
         max-width: 1100px;
-        /* 중앙 정렬을 위해 auto 유지 */
-        margin: 20px auto 0; 
-        /* 좌측 끝으로 이동을 위해 좌우 패딩을 0으로 설정하면 타이틀이 붙어버리므로, 
-           아래 worlds/levelTabsWrapper와 동일한 패딩을 유지하면서 max-width로 영역을 제한합니다. */
-        padding: 0 18px; /* 좌우 패딩만 적용 */
+        margin: 20px auto 10px; /* 중앙 정렬 유지 */
+        padding: 0 18px; 
         font-weight: 700;
         font-size: 16px;
-        /* 타이틀과 월드/레벨 버튼 사이의 간격 조정 */
-        margin-top: 20px;
-        margin-bottom: 10px; 
     }
-    /* 타이틀에 바로 마진을 주지 않고, 구조체에 마진을 주도록 아래에서 조정 */
+
+    /* [추가] 월드 바와 레벨 바를 래핑하는 공통 스타일 */
+    .button-bar-wrapper {
+        /* [추가] 월드 바와 레벨 바의 너비를 1100px로 제한하고 중앙 정렬 */
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 18px; /* 내부 컨테이너와 동일한 좌우 패딩 적용 */
+    }
 
     .worlds{
         display:flex;
         gap:8px; 
-        padding:12px 18px; 
+        padding:12px 0; /* padding은 .button-bar-wrapper로 이동 */
         background: rgba(0, 0, 0, 0.1); 
+        border-radius: 8px; /* 둥근 모서리 추가 */
     }
     .world{
         flex:1; /* 월드 버튼 균등하게 나누기 */
         min-width:0; 
-        /* [핵심 수정] 레벨 탭 버튼과 높이 통일 */
         height:100px; 
         border-radius:8px;
         background-size:cover; /* 이미지 전체 덮기 */
@@ -117,7 +126,11 @@
         border-radius: 8px;
     }
     
-    .container{max-width:1100px;margin:20px auto;padding:0 18px}
+    .container{
+        max-width:1100px; /* 컨테이너 너비를 1100px로 제한 */
+        margin:20px auto;
+        padding:0 18px;
+    }
     .card{
       background:var(--card-bg);
       padding:18px;
@@ -126,46 +139,44 @@
       border:1px solid rgba(255,255,255,0.06); /* 어두운 테두리 */
     }
     
-    /* [수정] 레벨 탭 컨테이너의 새로운 스타일: 월드바와 동일하게 배치 */
+    /* 레벨 탭 컨테이너의 새로운 스타일: 월드바와 동일하게 배치 */
     #levelTabsWrapper {
         display: flex;
         gap: 8px;
-        padding: 12px 18px;
+        padding: 12px 0; /* padding은 .button-bar-wrapper로 이동 */
         background: rgba(0, 0, 0, 0.1);
-        max-width: 1100px;
-        margin: 0 auto;
+        border-radius: 8px; /* 둥근 모서리 추가 */
+        width: 100%; /* 부모 .button-bar-wrapper의 너비를 채움 */
     }
 
-    /* [수정] 레벨 탭 버튼 그룹 스타일 */
+    /* 레벨 탭 버튼 그룹 스타일 */
     #levelTabs{
       display:flex;
-      gap:8px; /* 버튼 간격 조정: 4px에서 8px로 */
+      gap:8px; 
       margin-top:0px;
-      width: 100%; /* 부모 컨테이너 너비 채우기 */
+      width: 100%;
     }
     .tab{
-      flex:1; /* 레벨 버튼들이 균등한 크기를 가지도록 설정 */
+      flex:1; 
       min-width:0;
-      /* [핵심 수정] 월드 버튼과 동일한 높이로 설정 */
       height:100px; 
-      display: flex; /* 내부 텍스트 중앙 정렬을 위해 flex 사용 */
+      display: flex;
       align-items: center;
       justify-content: center;
       padding:6px 10px;
-      border-radius:8px; /* 둥근 모서리 */
-      background:var(--card-bg); /* 다크 배경에 맞게 수정 */
+      border-radius:8px; 
+      background:var(--card-bg); 
       color:var(--muted);
       cursor:pointer;
       font-weight:700;
-      font-size: 0.95rem; /* 텍스트 크기 약간 증가 */
+      font-size: 0.95rem; 
       border:1px solid rgba(255,255,255,0.1);
       transition: background 0.2s, transform 0.2s;
     }
-    /* 탭 호버 효과 추가 */
     .tab:not(.active):hover {
-        transform: translateY(-3px); /* 월드 버튼과 동일하게 변경 */
+        transform: translateY(-3px); 
         background: #40444b;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* 월드 버튼과 동일하게 변경 */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); 
     }
 
     .tab.active{
@@ -175,18 +186,14 @@
         box-shadow: 0 2px 5px rgba(88, 101, 242, 0.4);
     }
     
-    /* [삭제] 이전 코드에서 사용했던 levelMajorTab 관련 스타일 제거 */
-    #levelMajorTab { display: none; }
-
-
     /* 입력 필드 스타일 조정 */
     input,textarea{
       width:100%;padding:10px;border-radius:8px;
-      border:1px solid rgba(255,255,255,0.1); /* 어두운 배경에 맞는 테두리 */
-      background:#1e1f22; /* 어두운 입력 필드 배경 */
+      border:1px solid rgba(255,255,255,0.1); 
+      background:#1e1f22; 
       color:var(--text);
       font-size:14px;line-height:1.4;
-      font-family:'Nanum Gothic', 'Noto Sans KR', system-ui, sans-serif; /* 입력 필드에도 폰트 적용 */
+      font-family:'Nanum Gothic', 'Noto Sans KR', system-ui, sans-serif; 
     }
     textarea{min-height:70px;resize:vertical} 
     
@@ -194,13 +201,13 @@
     button.primary{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
     .small{font-size:13px;color:var(--muted)}
     
-    /* 게시글 카드 스타일 (밀도 및 선명한 테두리) */
+    /* 게시글 카드 스타일 */
     .post{
       margin-bottom:12px; 
       padding:12px; 
       border-radius:10px; 
-      background:#2f3136; /* 카드보다 살짝 어둡게 (글 목록 강조) */
-      border:1px solid rgba(255,255,255,0.15); /* 선명한 흰색 테두리 */
+      background:#2f3136; 
+      border:1px solid rgba(255,255,255,0.15); 
       box-shadow: none; 
       transition: transform 0.1s ease-in-out;
     }
@@ -220,48 +227,61 @@
         transition: color 0.1s;
     }
     .delete-btn:hover {
-        color: #ff5555; /* 어두운 테마에 맞는 빨간색 */
+        color: #ff5555; 
     }
 
     /* 반응형 */
     @media(max-width:768px){ 
+      /* 헤더는 모바일에서 전체 너비 사용 */
+      header { max-width: 100%; padding: 12px; }
+      
+      /* 타이틀과 버튼 바 래퍼는 좌우 여백을 줄여 전체 화면에 가깝게 표시 */
+      .world-section-title, .button-bar-wrapper {
+          max-width: 100%;
+          padding: 0 12px;
+      }
+
       /* 월드바 스크롤 */
       .worlds { 
-        padding: 0 12px;
-        margin: 0 -12px; 
+        padding: 0; /* 래퍼가 패딩을 담당 */
+        margin: 0;
         overflow-x: scroll; 
         white-space: nowrap; 
         gap: 8px; 
       }
       .world {
         flex: 0 0 130px; 
-        /* [핵심 수정] 모바일에서 높이 통일 */
         height: 80px;
+        margin: 0 4px; /* 스크롤 가능하도록 여백 추가 */
       }
+      /* 첫 번째와 마지막 월드에만 래퍼 패딩만큼 추가 여백 */
+      .worlds .world:first-child { margin-left: 0; }
+      .worlds .world:last-child { margin-right: 0; }
+
+
       /* 레벨 탭 스크롤 */
       #levelTabsWrapper {
-        padding: 0 12px;
-        margin: 0 -12px;
-        overflow-x: scroll; /* 모바일에서 스크롤 가능하게 설정 */
+        padding: 0;
+        margin: 0;
       }
       #levelTabs {
-          flex-wrap: nowrap; /* 스크롤을 위해 줄바꿈 방지 */
-          width: auto; /* 내용에 맞춰 너비 설정 */
+          flex-wrap: nowrap; 
+          width: auto; 
           padding: 0;
       }
       .tab {
-          flex: 0 0 130px; /* 월드 버튼과 동일한 너비 설정 */
-          /* [핵심 수정] 모바일에서 높이 통일 */
+          flex: 0 0 130px; 
           height: 80px; 
           transform: none !important;
           box-shadow: none !important;
+          margin: 0 4px; /* 스크롤 가능하도록 여백 추가 */
       }
+      /* 첫 번째와 마지막 탭에만 래퍼 패딩만큼 추가 여백 */
+      #levelTabs .tab:first-child { margin-left: 0; }
+      #levelTabs .tab:last-child { margin-right: 0; }
 
-      /* 모바일에서는 탭 컨테이너의 padding을 제거 */
-      #levelTabsContainer {
-          padding: 0;
-          margin-bottom: 20px;
-      }
+
+      /* 모바일 컨테이너 패딩 조정 */
       .container{padding:0 12px} 
     }
   </style>
@@ -277,32 +297,29 @@
   </header>
 
   <!-- 지역별 모집 타이틀 -->
-  <!-- [수정] 타이틀 상단 마진을 style 블록으로 이동하여 간격 통일 -->
   <div class="world-section-title">지역별 파티 모집</div>
-  <div class="worlds" id="worldBar">
-    <div class="world" data-id="victoria"><div class="label">빅토리아</div></div>
-    <div class="world" data-id="elnath"><div class="label">엘나스</div></div>
-    <div class="world" data-id="luduslake"><div class="label">루더스 호수</div></div>
-    <div class="world" data-id="minar"><div class="label">미나르 숲</div></div>
-    <div class="world" data-id="aqua"><div class="label">아쿠아 로드</div></div>
-    <div class="world" data-id="nihal"><div class="label">니할 사막</div></div>
+  <!-- [추가] 월드바를 래퍼로 감싸서 너비 고정 및 중앙 정렬 -->
+  <div class="button-bar-wrapper">
+    <div class="worlds" id="worldBar">
+      <div class="world" data-id="victoria"><div class="label">빅토리아</div></div>
+      <div class="world" data-id="elnath"><div class="label">엘나스</div></div>
+      <div class="world" data-id="luduslake"><div class="label">루더스 호수</div></div>
+      <div class="world" data-id="minar"><div class="label">미나르 숲</div></div>
+      <div class="world" data-id="aqua"><div class="label">아쿠아 로드</div></div>
+      <div class="world" data-id="nihal"><div class="label">니할 사막</div></div>
+    </div>
   </div>
   
   <!-- [추가] 레벨별 모집 타이틀 -->
-  <!-- [수정] 타이틀 상단 마진을 style 블록으로 이동하여 간격 통일 -->
   <div class="world-section-title">레벨대별 파티 모집</div>
-  <!-- [수정] 레벨 탭을 월드바와 동일한 컨테이너(levelTabsWrapper) 안에 배치 -->
-  <div id="levelTabsWrapper">
-    <!-- 레벨 탭 버튼들이 들어갈 자리 (levelMajorTab 역할 삭제) -->
-    <div id="levelTabs" class="tabs"></div>
+  <!-- [수정] 레벨 탭도 래퍼로 감싸서 너비 고정 및 중앙 정렬 -->
+  <div class="button-bar-wrapper">
+    <div id="levelTabsWrapper">
+      <div id="levelTabs" class="tabs"></div>
+    </div>
   </div>
 
   <div class="container">
-    <!-- 레벨 탭 (메인 화면에서 항상 표시) - 이전 코드를 위해 남겨두었으나, 이제 상단의 levelTabsWrapper가 대체함 -->
-    <div id="levelTabsContainer" class="hidden"> 
-        <div class="small" style="font-weight: 700; color: var(--text);">레벨대별 파티 모집</div>
-    </div>
-    
     <!-- LEVEL POST VIEW (레벨 탭 클릭 시 표시되는 모집 페이지) -->
     <div id="levelView" class="hidden card"> 
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
@@ -384,7 +401,6 @@
 
     /* ===== UI refs ===== */
     const worldEls = document.querySelectorAll('.world');
-    // const levelMajorTabEl = document.getElementById('levelMajorTab'); // [삭제] levelMajorTab 엘리먼트 참조 제거
     const levelTabsEl = document.getElementById('levelTabs');
 
     // Search
@@ -474,7 +490,6 @@
         levelTabsEl.appendChild(b);
       });
       
-      // [삭제] levelMajorTab 클릭 이벤트 제거
     }
 
     /* ===== Post Deletion Logic ===== */
@@ -875,4 +890,3 @@
   </script>
 </body>
 </html>
-
