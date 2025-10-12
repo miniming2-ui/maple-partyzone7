@@ -59,14 +59,22 @@
     }
 
 
-    /* 월드 섹션 (지역별 파티 모집) 스타일 */
+    /* [수정] 월드/레벨 섹션 타이틀 스타일: 좌측 끝으로 이동 */
     .world-section-title {
         max-width: 1100px;
-        margin: 0 auto;
-        padding: 10px 18px 0;
+        /* 중앙 정렬을 위해 auto 유지 */
+        margin: 20px auto 0; 
+        /* 좌측 끝으로 이동을 위해 좌우 패딩을 0으로 설정하면 타이틀이 붙어버리므로, 
+           아래 worlds/levelTabsWrapper와 동일한 패딩을 유지하면서 max-width로 영역을 제한합니다. */
+        padding: 0 18px; /* 좌우 패딩만 적용 */
         font-weight: 700;
         font-size: 16px;
+        /* 타이틀과 월드/레벨 버튼 사이의 간격 조정 */
+        margin-top: 20px;
+        margin-bottom: 10px; 
     }
+    /* 타이틀에 바로 마진을 주지 않고, 구조체에 마진을 주도록 아래에서 조정 */
+
     .worlds{
         display:flex;
         gap:8px; 
@@ -76,7 +84,8 @@
     .world{
         flex:1; /* 월드 버튼 균등하게 나누기 */
         min-width:0; 
-        height:100px; /* 이미지 표시를 위해 높이 증가 */
+        /* [핵심 수정] 레벨 탭 버튼과 높이 통일 */
+        height:100px; 
         border-radius:8px;
         background-size:cover; /* 이미지 전체 덮기 */
         background-position:center;
@@ -137,7 +146,8 @@
     .tab{
       flex:1; /* 레벨 버튼들이 균등한 크기를 가지도록 설정 */
       min-width:0;
-      height:100px; /* [핵심 수정] 월드 버튼과 동일한 높이로 설정 */
+      /* [핵심 수정] 월드 버튼과 동일한 높이로 설정 */
+      height:100px; 
       display: flex; /* 내부 텍스트 중앙 정렬을 위해 flex 사용 */
       align-items: center;
       justify-content: center;
@@ -225,6 +235,7 @@
       }
       .world {
         flex: 0 0 130px; 
+        /* [핵심 수정] 모바일에서 높이 통일 */
         height: 80px;
       }
       /* 레벨 탭 스크롤 */
@@ -239,7 +250,8 @@
           padding: 0;
       }
       .tab {
-          flex: 0 0 130px; /* 월드 버튼과 동일한 너비와 높이 설정 */
+          flex: 0 0 130px; /* 월드 버튼과 동일한 너비 설정 */
+          /* [핵심 수정] 모바일에서 높이 통일 */
           height: 80px; 
           transform: none !important;
           box-shadow: none !important;
@@ -265,6 +277,7 @@
   </header>
 
   <!-- 지역별 모집 타이틀 -->
+  <!-- [수정] 타이틀 상단 마진을 style 블록으로 이동하여 간격 통일 -->
   <div class="world-section-title">지역별 파티 모집</div>
   <div class="worlds" id="worldBar">
     <div class="world" data-id="victoria"><div class="label">빅토리아</div></div>
@@ -276,7 +289,8 @@
   </div>
   
   <!-- [추가] 레벨별 모집 타이틀 -->
-  <div class="world-section-title" style="margin-top: 20px;">레벨대별 파티 모집</div>
+  <!-- [수정] 타이틀 상단 마진을 style 블록으로 이동하여 간격 통일 -->
+  <div class="world-section-title">레벨대별 파티 모집</div>
   <!-- [수정] 레벨 탭을 월드바와 동일한 컨테이너(levelTabsWrapper) 안에 배치 -->
   <div id="levelTabsWrapper">
     <!-- 레벨 탭 버튼들이 들어갈 자리 (levelMajorTab 역할 삭제) -->
@@ -861,5 +875,4 @@
   </script>
 </body>
 </html>
-
 
