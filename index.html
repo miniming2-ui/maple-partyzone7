@@ -578,41 +578,51 @@
         listEl.appendChild(div);
     }
     
-    /* ===== Filter Logic ===== */
+    /* ===== Filter Logic (전체 탭 검색 기능 구현) ===== */
     function filterPosts(posts, criteria) {
-        // [수정] currentSearchTerm을 전역 상태에서 가져와 필터링 적용
         const searchTerm = currentSearchTerm.toLowerCase(); 
+        const isSearching = searchTerm.length > 0;
         
         return posts.filter(p => {
-            // 1. View filter (Level or Region)
-            let viewMatch = true;
-            if (criteria.type === 'level') {
-                viewMatch = p.type === 'board' && !p.region && p.level === criteria.value;
-            } else if (criteria.type === 'region') {
-                viewMatch = p.type === 'board' && p.region === criteria.value;
+            // 모든 게시글은 'board' 타입이어야 함 (Post Type Check)
+            if (p.type !== 'board') return false;
+
+            // 1. Search Filter (Highest Priority - If searching, show all matching content)
+            if (isSearching) {
+                // 게시글 내용(content)을 기준으로 검색
+                return p.content && p.content.toLowerCase().includes(searchTerm);
             }
 
-            if (!viewMatch) return false;
-
-            // 2. Search filter
-            if (searchTerm.length > 0) {
-                // 게시글 내용(content)을 기준으로 검색
-                return p.content.toLowerCase().includes(searchTerm);
+            // 2. View Filter (If NOT searching, filter by active tab)
+            if (criteria.type === 'level') {
+                // 레벨 탭에서는 레벨 모집글만
+                return !p.region && p.level === criteria.value;
+            } else if (criteria.type === 'region') {
+                // 지역 탭에서는 지역 모집글만
+                return p.region === criteria.value;
             }
             
-            return true;
+            return false;
         });
     }
 
-    /* ===== render functions ===== */
+    /* ===== render functions (검색 상태에 따라 제목 변경 및 렌더링) ===== */
     function renderLevelPosts(){
       levelPostsList.innerHTML = '';
       if(!activeLevel) return;
       
+      const isSearching = currentSearchTerm.length > 0;
       const filtered = filterPosts(cachedPosts, { type: 'level', value: activeLevel });
       
+      // Title Update based on search state
+      if (isSearching) {
+        levelTitle.textContent = `🔍 전체 모집글 검색 결과: "${currentSearchTerm}"`;
+      } else {
+        levelTitle.textContent = activeLevel + ' 레벨 모집';
+      }
+
       if(filtered.length===0){
-        levelPostsList.innerHTML = `<div class="small">${currentSearchTerm.length > 0 ? '검색 결과가 없습니다.' : '해당 레벨대에 등록된 모집글이 없습니다.'}</div>`;
+        levelPostsList.innerHTML = `<div class="small">${isSearching ? `'${currentSearchTerm}'에 대한 전체 모집글 검색 결과가 없습니다.` : '해당 레벨대에 등록된 모집글이 없습니다.'}</div>`;
         return;
       }
       
@@ -623,10 +633,19 @@
       regionPosts.innerHTML = '';
       if(!activeRegion) return;
       
+      const isSearching = currentSearchTerm.length > 0;
       const filtered = filterPosts(cachedPosts, { type: 'region', value: activeRegion });
       
+      // Title Update based on search state
+      if (isSearching) {
+        regionTitle.textContent = `🔍 전체 모집글 검색 결과: "${currentSearchTerm}"`;
+      } else {
+        const regionLabel = document.querySelector(`.world[data-id="${activeRegion}"] .label`).textContent;
+        regionTitle.textContent = regionLabel + ' 모집';
+      }
+      
       if(filtered.length===0){ 
-        regionPosts.innerHTML = `<div class="small">${currentSearchTerm.length > 0 ? '검색 결과가 없습니다.' : '해당 지역에 등록된 모집글이 없습니다.'}</div></div>`;
+        regionPosts.innerHTML = `<div class="small">${isSearching ? `'${currentSearchTerm}'에 대한 전체 모집글 검색 결과가 없습니다.` : '해당 지역에 등록된 모집글이 없습니다.'}</div></div>`;
         return;
       }
       
@@ -635,6 +654,7 @@
 
     // [수정] 현재 활성화된 뷰에 따라 적절한 렌더링 함수를 호출하는 범용 함수
     function reRenderCurrentView() {
+        // 검색어가 업데이트될 때, 현재 활성화된 뷰를 다시 렌더링하여 필터링 적용
         if (!levelView.classList.contains('hidden')) {
             renderLevelPosts();
         } else if (!regionView.classList.contains('hidden')) {
@@ -728,7 +748,7 @@
         activeRegion = null;
 
         // UI updates
-        levelTitle.textContent = activeLevel + ' 레벨 모집';
+        // [수정] 제목 업데이트는 renderLevelPosts()에서 검색 상태에 따라 처리
         levelView.classList.remove('hidden');
         regionView.classList.add('hidden');
         
@@ -747,9 +767,7 @@
         activeLevel = null;
 
         // UI updates
-        const regionLabel = document.querySelector(`.world[data-id="${activeRegion}"] .label`).textContent;
-        document.getElementById('regionTitle').textContent = regionLabel + ' 모집';
-        
+        // [수정] 제목 업데이트는 renderRegionPosts()에서 검색 상태에 따라 처리
         levelView.classList.add('hidden');
         regionView.classList.remove('hidden');
 
@@ -905,4 +923,6 @@
   </script>
 </body>
 </html>
+
+
 
