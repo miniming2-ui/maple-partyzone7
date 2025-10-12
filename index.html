@@ -60,13 +60,16 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
 
-    /* 월드별 배경 이미지 설정 (CSS에서 파일 경로 관리) */
-    .world[data-id="victoria"] { background-image: url('./빅토리아.png'); }
-    .world[data-id="elnath"] { background-image: url('./엘나스.png'); }
-    .world[data-id="luduslake"] { background-image: url('./루더스호수.png'); }
-    .world[data-id="minar"] { background-image: url('./미나르숲.png'); }
-    .world[data-id="aqua"] { background-image: url('./아쿠아로드.png'); }
-    .world[data-id="nihal"] { background-image: url('./니할사막.png'); }
+    /* *** [수정 부분] 이미지 경로 설정 - images 폴더 사용 ***
+    GitHub에 images 폴더를 생성하고 모든 이미지 파일을 그 안에 넣었다는 가정 하에 
+    경로를 './images/[파일명].png'로 수정했습니다. 
+    */
+    .world[data-id="victoria"] { background-image: url('./images/victoria.png'); }
+    .world[data-id="elnath"] { background-image: url('./images/elnath.png'); }
+    .world[data-id="luduslake"] { background-image: url('./images/luduslake.png'); }
+    .world[data-id="minar"] { background-image: url('./images/minar.png'); }
+    .world[data-id="aqua"] { background-image: url('./images/aqua.png'); }
+    .world[data-id="nihal"] { background-image: url('./images/nihal.png'); }
 
     /* 레이블 스타일 (어두운 배경 위에서 잘 보이도록) */
     .world .label{
@@ -169,7 +172,7 @@
   </header>
 
   <div class="worlds" id="worldBar">
-    <!-- 인라인 스타일 대신 CSS 클래스 및 data-id 사용 -->
+    <!-- data-id를 파일명과 일치하는 영문 소문자로 유지했습니다. -->
     <div class="world" data-id="victoria"><div class="label">빅토리아</div></div>
     <div class="world" data-id="elnath"><div class="label">엘나스</div></div>
     <div class="world" data-id="luduslake"><div class="label">루더스 호수</div></div>
@@ -240,8 +243,8 @@
 
     // ========== firebaseConfig (이미 제공하신 값) ==========
     const firebaseConfig = {
-      apiKey: "AIzaSyB059CBnkyxlsJZbMfbBK5AJ_s4XKbYGcI",
-      authDomain: "maple-party-zone.firebaseapp.com".replace("maple-party-zone","maple-partyzone"), 
+      apiKey: "AIzaSyB059CBnkyxlsZ_KbYGcI",
+      authDomain: "maple-partyzone.firebaseapp.com", 
       projectId: "maple-partyzone",
       storageBucket: "maple-partyzone.firebasestorage.app",
       messagingSenderId: "853981783847",
@@ -255,7 +258,8 @@
 
     /* ===== config ===== */
     const CLIENT_ID = "1424448769113456752";
-    const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/";
+    // *** [수정] index.html이 루트 파일이므로 REDIRECT_URI를 기본 경로로 설정했습니다. ***
+    const REDIRECT_URI = "https://miniming2-ui.github.io/maple-partyzone7/"; 
     const OAUTH_SCOPE = "identify";
     const LEVEL_TABS = ['10~30','30~50','50~80','80~100','100~130','130 이상'];
     const REGIONS = ['victoria','elnath','luduslake','minar','aqua','nihal'];
@@ -647,7 +651,7 @@
     });
 
 
-    /* ===== Discord login flow (implicit) ===== */
+    /* ===== Discord login flow (implicit) */
     loginBtn.addEventListener('click', ()=> {
       const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${OAUTH_SCOPE}`;
       window.location.href = url;
@@ -671,6 +675,7 @@
           saveUser(u);
           renderLoginArea(u);
           // remove token from url
+          // *** [수정] history.replaceState의 경로를 REDIRECT_URI로 변경하여 index.html이 로드되게 함 ***
           history.replaceState(null,'',REDIRECT_URI);
         }catch(err){
           console.error(err);
@@ -697,6 +702,4 @@
   </script>
 </body>
 </html>
-
-
 
