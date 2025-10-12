@@ -30,12 +30,12 @@
       -webkit-font-smoothing:antialiased;
     }
     
-    /* [수정] 헤더 영역을 컨테이너 너비와 동일하게 중앙 정렬 */
+    /* [수정] 헤더 영역은 중앙 정렬 유지 */
     header{
       display:flex;align-items:center;justify-content:space-between;
       padding:12px 20px;background:transparent;
       border-bottom:1px solid rgba(255,255,255,0.08); /* 어두운 배경에 맞는 구분선 */
-      /* [추가] 헤더 내부 콘텐츠를 1100px로 제한하고 중앙 정렬 */
+      /* 헤더 내부 콘텐츠를 1100px로 제한하고 중앙 정렬 */
       max-width: 1100px; 
       margin: 0 auto;
       width: 100%;
@@ -66,19 +66,26 @@
     }
 
 
-    /* 월드/레벨 섹션 타이틀 스타일: 좌측 끝으로 이동 */
+    /* [수정] 월드/레벨 섹션 타이틀 스타일: 좌측 끝으로 이동 */
     .world-section-title {
-        /* [수정] 타이틀 영역의 너비를 메인 컨테이너와 동일하게 1100px로 제한 */
+        /* [유지] 타이틀 영역의 너비를 메인 컨테이너와 동일하게 1100px로 제한 */
         max-width: 1100px;
-        margin: 20px auto 10px; /* 중앙 정렬 유지 */
+        /* [수정] margin-left: auto; 제거하고 중앙 정렬 해제 */
+        margin: 20px auto 10px 0; 
+        /* [추가] 부모 컨테이너에 맞춰 중앙 정렬 */
+        margin-left: auto;
+        margin-right: auto;
+        
         padding: 0 18px; 
         font-weight: 700;
         font-size: 16px;
+        /* [추가] 텍스트 정렬 */
+        text-align: left;
     }
 
-    /* [추가] 월드 바와 레벨 바를 래핑하는 공통 스타일 */
+    /* 월드 바와 레벨 바를 래핑하는 공통 스타일 */
     .button-bar-wrapper {
-        /* [추가] 월드 바와 레벨 바의 너비를 1100px로 제한하고 중앙 정렬 */
+        /* [유지] 월드 바와 레벨 바의 너비를 1100px로 제한하고 중앙 정렬 */
         max-width: 1100px;
         margin: 0 auto;
         padding: 0 18px; /* 내부 컨테이너와 동일한 좌우 패딩 적용 */
@@ -147,6 +154,8 @@
         background: rgba(0, 0, 0, 0.1);
         border-radius: 8px; /* 둥근 모서리 추가 */
         width: 100%; /* 부모 .button-bar-wrapper의 너비를 채움 */
+        /* [수정] 탭 내부 요소를 왼쪽으로 정렬하도록 flex-start 추가 (기본값이지만 명시) */
+        justify-content: flex-start;
     }
 
     /* 레벨 탭 버튼 그룹 스타일 */
@@ -240,6 +249,8 @@
           max-width: 100%;
           padding: 0 12px;
       }
+      /* [수정] 모바일에서도 좌측 정렬 유지 */
+      .world-section-title { text-align: left; }
 
       /* 월드바 스크롤 */
       .worlds { 
@@ -297,8 +308,9 @@
   </header>
 
   <!-- 지역별 모집 타이틀 -->
+  <!-- [수정] max-width 1100px 컨테이너 안에서 좌측 정렬 -->
   <div class="world-section-title">지역별 파티 모집</div>
-  <!-- [추가] 월드바를 래퍼로 감싸서 너비 고정 및 중앙 정렬 -->
+  <!-- 월드바를 래퍼로 감싸서 너비 고정 및 중앙 정렬 (내부 요소는 좌측 정렬) -->
   <div class="button-bar-wrapper">
     <div class="worlds" id="worldBar">
       <div class="world" data-id="victoria"><div class="label">빅토리아</div></div>
@@ -310,9 +322,10 @@
     </div>
   </div>
   
-  <!-- [추가] 레벨별 모집 타이틀 -->
+  <!-- 레벨별 모집 타이틀 -->
+  <!-- [수정] max-width 1100px 컨테이너 안에서 좌측 정렬 -->
   <div class="world-section-title">레벨대별 파티 모집</div>
-  <!-- [수정] 레벨 탭도 래퍼로 감싸서 너비 고정 및 중앙 정렬 -->
+  <!-- 레벨 탭도 래퍼로 감싸서 너비 고정 및 중앙 정렬 (내부 요소는 좌측 정렬) -->
   <div class="button-bar-wrapper">
     <div id="levelTabsWrapper">
       <div id="levelTabs" class="tabs"></div>
@@ -890,3 +903,5 @@
   </script>
 </body>
 </html>
+
+
